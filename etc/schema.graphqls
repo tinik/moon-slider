@@ -1,0 +1,24 @@
+type SliderOutput {
+    keyword: String!
+    title: String
+    items: [SliderItem!]
+}
+
+type SliderItemImage {
+    image: String
+    mobile: String
+}
+
+type SliderItem {
+    title: String
+    content: String
+    image: SliderItemImage!
+    link: String
+    target: String
+}
+
+type Query {
+    slider (
+        keyword: String!
+    ): SliderOutput @resolver(class: "\\Tinik\\MoonSlider\\Model\\Resolver\\Slider")
+}

@@ -1,0 +1,54 @@
+{
+  "moon_slider_slide": {
+    "column": {
+      "slide_id": true,
+      "keyword": true,
+      "is_active": true,
+      "created_time": true,
+      "updated_time": true
+    },
+    "index": {
+      "MOON_SLIDER_KEYWORD": true
+    },
+    "constraint": {
+      "PRIMARY": true
+    }
+  },
+  "moon_slider_slide_store": {
+    "column": {
+      "slide_id": true,
+      "store_id": true,
+      "title": true
+    },
+    "index": {
+      "MOON_SLIDER_STORE_INDEX_STORE_ID": true,
+      "MOON_SLIDER_STORE_SLIDE_ID": true,
+      "MOON_SLIDER_STORE_STORE_ID": true
+    },
+    "constraint": {
+      "PRIMARY": true
+    }
+  },
+  "moon_slider_slide_item": {
+    "column": {
+      "item_id": true,
+      "slide_id": true,
+      "title": true,
+      "content": true,
+      "image": true,
+      "link": true,
+      "target": true,
+      "position": true,
+      "is_active": true,
+      "created_time": true,
+      "updated_time": true
+    },
+    "index": {
+      "MOON_SLIDER_STORE_SLIDE_ID_MOON_SLIDER_SLIDE_ID": true,
+      "MOON_SLIDER_STORE_STORE_ID": true
+    },
+    "constraint": {
+      "PRIMARY": true
+    }
+  }
+}

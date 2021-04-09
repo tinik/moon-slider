@@ -1,0 +1,32 @@
+{
+    "name": "tinik/moon-slider",
+    "description": "MoonSlider module",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "minimum-stability": "stable",
+    "homepage":"https://github.com/tinik/moon-slider",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name":"Nikolay Tyshchuk",
+            "homepage": "http://github.com/tinik",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "~7.1.0||~7.2.0||~7.3.0||~7.4.0",
+        "magento/magento-composer-installer": "*",
+        "magento/framework": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Tinik\\MoonSlider\\": ""
+        }
+    }
+}

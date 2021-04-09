@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">moon_slider_slides_new.moon_slider_slides_new_data_source</item>
+            <item name="deps" xsi:type="string">moon_slider_slides_new.moon_slider_slides_new_data_source</item>
+        </item>
+        <item name="config" xsi:type="array">
+            <item name="dataScope" xsi:type="string">data</item>
+            <item name="namespace" xsi:type="string">moon_slider_slides_new</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Slider</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+        <item name="buttons" xsi:type="array">
+            <item name="back" xsi:type="string">Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button\Back</item>
+            <item name="save" xsi:type="string">Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button\Save</item>
+        </item>
+    </argument>
+    <dataSource name="moon_slider_slides_new_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Tinik\MoonSlider\Ui\DataProvider\Slide</argument>
+            <argument name="name" xsi:type="string">moon_slider_slides_new_data_source</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="submit_url" xsi:type="url" path="slides/slide/save" />
+                </item>
+            </argument>
+        </argument>
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+    </dataSource>
+    <fieldset name="general" sortOrder="0">
+        <settings>
+            <label />
+            <collapsible>false</collapsible>
+        </settings>
+        <field name="is_active" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">1</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>boolean</dataType>
+                <dataScope>is_active</dataScope>
+                <label translate="true">Active</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <prefer>toggle</prefer>
+                        <valueMap>
+                            <map name="true" xsi:type="string">1</map>
+                            <map name="false" xsi:type="string">0</map>
+                        </valueMap>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="keyword" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <dataScope>keyword</dataScope>
+                <label translate="true">Keyword</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="title" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <dataScope>title</dataScope>
+                <label translate="true">Title</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+    </fieldset>
+</form>

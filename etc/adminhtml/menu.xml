@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add
+            parent="Magento_Backend::content"
+            id="Tinik_MoonSlider::sliders"
+            resource="Tinik_MoonSlider::slides"
+            module="Tinik_MoonSlider"
+            title="Moon Sliders"
+            sortOrder="90"
+        />
+        <add
+            parent="Tinik_MoonSlider::sliders"
+            id="Tinik_MoonSlider::slides_list"
+            resource="Tinik_MoonSlider::slides"
+            module="Tinik_MoonSlider"
+            title="Sliders"
+            action="slides/index/index/"
+            sortOrder="90"
+        />
+        <add
+            parent="Tinik_MoonSlider::sliders"
+            id="Tinik_MoonSlider::slides_new"
+            resource="Tinik_MoonSlider::slides"
+            module="Tinik_MoonSlider"
+            title="Create"
+            action="slides/slide/new/"
+            sortOrder="90"
+        />
+    </menu>
+</config>

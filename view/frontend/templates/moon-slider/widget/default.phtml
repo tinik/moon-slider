@@ -1,0 +1,66 @@
+<?php
+/**
+ * Variables assign
+ *
+ * @var \Tinik\MoonSlider\Block\Widget\Slider $block
+ * @var \Tinik\MoonSlider\Model\Slide $entity
+ * @var \Tinik\MoonSlider\Model\Item[] $slides
+ */
+
+$params = $block->getMageSetting();
+$sliderMage = json_encode(['Tinik_MoonSlider/js/slide' => $params]);
+
+$wrapStyles = ['moon-slider', 'moon-slider--'. $entity->getKeyword()];
+if (($wrapClass = $entity->getWrapClass())) {
+    $wrapStyles[] = $wrapClass;
+}
+
+?>
+<?php if ($slides && $entity): ?>
+<div class="moon-slider <?php echo join(' ', $wrapStyles); ?>">
+    <?php if ($entity->getShowTitle() && $title = $entity->getTitle()): ?>
+        <h2 class="moon-slider__title"><?php echo $title; ?></h2>
+    <?php endif; ?>
+
+    <div data-mage-init='<?php echo $sliderMage; ?>' class="splide">
+        <div class="splide__track">
+            <ul class="splide__list">
+                <?php foreach ($slides as $row): ?>
+                    <?php
+                        $styles = [];
+                        $background = $row->getBackground();
+                        if ($background):
+                            $styles[] = sprintf('background:%s', $background);
+                        endif;
+
+                        $color = $row->getColor();
+                        if ($color):
+                            $styles[] = sprintf('color:%s', $color);
+                        endif;
+                    ?>
+                    <li class="splide__slide">
+                        <div style="<?php echo join(';', $styles); ?>" class="splide__slide__container">
+                            <img
+                                src="<?php echo $block->getImage($row); ?>"
+                                srcset="<?php echo $block->getImage($row, 'mobile'); ?>, <?php echo $block->getImage($row); ?> 2x"
+                            />
+                            <div class="moon-slider__slide_wrapper">
+                                <div class="moon-slider__slide_title">
+                                    <?php echo $row->getTitle(); ?>
+                                </div>
+
+                                <?php $content = $row->getContent(); ?>
+                                <?php if($content): ?>
+                                    <div class="moon-slider__slide_content">
+                                        <?php echo $content; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+<?php endif; ?>
+</div>

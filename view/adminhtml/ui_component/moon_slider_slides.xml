@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">moon_slider_slides.moon_slider_slides_data_source</item>
+            <item name="deps" xsi:type="string">moon_slider_slides.moon_slider_slides_data_source</item>
+        </item>
+        <item name="spinner" xsi:type="string">moon_slider_slides_columns</item>
+        <item name="buttons" xsi:type="array">
+            <item name="add" xsi:type="array">
+                <item name="name" xsi:type="string">add</item>
+                <item name="label" xsi:type="string" translate="true">Add New</item>
+                <item name="class" xsi:type="string">primary</item>
+                <item name="url" xsi:type="string">*/slide/new</item>
+            </item>
+        </item>
+    </argument>
+    <dataSource name="moon_slider_slides_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Tinik\MoonSlider\Ui\Component\Listing\DataProviders\MoonSlider\Slider\Slides</argument>
+            <argument name="name" xsi:type="string">moon_slider_slides_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">slide_id</argument>
+            <argument name="requestFieldName" xsi:type="string">slide_id</argument>
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="update_url" xsi:type="url" path="mui/index/render" />
+                    <item name="storageConfig" xsi:type="array">
+                        <item name="indexField" xsi:type="string">slide_id</item>
+                    </item>
+                </item>
+            </argument>
+        </argument>
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+            </item>
+        </argument>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+
+        <!-- Mass action -->
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <settings>
+                    <label translate="true">Delete</label>
+                    <confirm>
+                        <message translate="true">Are you sure you want to delete selected items?</message>
+                        <title translate="true">Delete items</title>
+                    </confirm>
+                    <url path="slides/slide/massActions/action/delete"/>
+                    <type>delete</type>
+                </settings>
+            </action>
+            <action name="enable">
+                <settings>
+                    <label translate="true">Active</label>
+                    <confirm>
+                        <title translate="true">Enable items</title>
+                        <message translate="true">Are you sure you want to enable selected items?</message>
+                    </confirm>
+                    <url path="slides/slide/massActions/action/enable"/>
+                    <type>enable</type>
+                </settings>
+            </action>
+            <action name="disable">
+                <settings>
+                    <label translate="true">Disable</label>
+                    <confirm>
+                        <title translate="true">Disable items</title>
+                        <message translate="true">Are you sure you want to disable selected items?</message>
+                    </confirm>
+                    <url path="slides/slide/massActions/action/disable"/>
+                    <type>disable</type>
+                </settings>
+            </action>
+        </massaction>
+
+        <paging name="listing_paging" />
+
+        <filters name="listing_filters" />
+    </listingToolbar>
+
+    <columns name="moon_slider_slides_columns">
+        <selectionsColumn name="ids">
+            <settings>
+                <resizeDefaultWidth>48</resizeDefaultWidth>
+                <indexField>slide_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="slide_id">
+            <settings>
+                <label translate="true">ID</label>
+                <filter>textRange</filter>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="keyword">
+            <settings>
+                <label translate="true">Keyword</label>
+                <filter>text</filter>
+                <resizeEnabled>false</resizeEnabled>
+            </settings>
+        </column>
+        <column name="title">
+            <settings>
+                <label translate="true">Title</label>
+                <filter>text</filter>
+            </settings>
+        </column>
+        <column name="is_active">
+            <settings>
+                <label translate="true">Active</label>
+                <dataType>select</dataType>
+                <sortable>false</sortable>
+                <options class="Tinik\MoonSlider\Ui\Component\Listing\Column\Items\Status"/>
+            </settings>
+        </column>
+        <actionsColumn name="actions" sortOrder="200" class="Tinik\MoonSlider\Ui\Component\Listing\Column\Sliders\ColumnActions">
+            <settings>
+                <indexField>slide_id</indexField>
+                <resizeEnabled>false</resizeEnabled>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

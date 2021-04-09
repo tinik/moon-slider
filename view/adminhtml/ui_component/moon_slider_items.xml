@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">moon_slider_items.moon_slider_items_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>columns</spinner>
+        <deps>
+            <dep>moon_slider_items.moon_slider_items_data_source</dep>
+        </deps>
+    </settings>
+
+    <listingToolbar>
+        <!-- Mass action -->
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <settings>
+                    <type>delete</type>
+                    <url path="slides/item/massActions/action/delete" />
+                    <label translate="true">Delete</label>
+                    <confirm>
+                        <message translate="true">Are you sure you want to delete selected items?</message>
+                        <title translate="true">Delete items</title>
+                    </confirm>
+                </settings>
+            </action>
+            <action name="enable">
+                <settings>
+                    <type>enable</type>
+                    <label translate="true">Active</label>
+                    <url path="slides/item/massActions/action/enable"/>
+                    <confirm>
+                        <title translate="true">Enable items</title>
+                        <message translate="true">Are you sure you want to enable selected items?</message>
+                    </confirm>
+                </settings>
+            </action>
+            <action name="disable">
+                <settings>
+                    <type>disable</type>
+                    <label translate="true">Disable</label>
+                    <url path="slides/item/massActions/action/disable"/>
+                    <confirm>
+                        <title translate="true">Disable items</title>
+                        <message translate="true">Are you sure you want to disable selected items?</message>
+                    </confirm>
+                </settings>
+            </action>
+        </massaction>
+
+        <paging name="listing_paging">
+            <settings>
+                <pageSize>32</pageSize>
+                <options>
+                    <option name="32" xsi:type="array">
+                        <item name="value" xsi:type="number">32</item>
+                        <item name="label" xsi:type="string">32</item>
+                    </option>
+                    <option name="48" xsi:type="array">
+                        <item name="value" xsi:type="number">48</item>
+                        <item name="label" xsi:type="string">48</item>
+                    </option>
+                    <option name="64" xsi:type="array">
+                        <item name="value" xsi:type="number">64</item>
+                        <item name="label" xsi:type="string">64</item>
+                    </option>
+                </options>
+            </settings>
+        </paging>
+    </listingToolbar>
+    <dataSource name="moon_slider_items_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <dataProvider class="Tinik\MoonSlider\Ui\Component\Listing\DataProviders\MoonSlider\Item\Items" name="moon_slider_items_data_source">
+            <settings>
+                <requestFieldName>item_id</requestFieldName>
+                <primaryFieldName>item_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <columns name="columns">
+        <selectionsColumn name="ids">
+            <settings>
+                <indexField>item_id</indexField>
+                <resizeDefaultWidth>55</resizeDefaultWidth>
+            </settings>
+        </selectionsColumn>
+        <column name="item_id">
+            <settings>
+                <visible>false</visible>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="image" class="Tinik\MoonSlider\Ui\Component\Listing\Column\Items\Thumbnail" component="Magento_Ui/js/grid/columns/thumbnail" sortOrder="20">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="align" xsi:type="string">left</item>
+                </item>
+            </argument>
+            <settings>
+                <label translate="true">Thumbnail</label>
+                <sortable>false</sortable>
+            </settings>
+        </column>
+        <column name="title">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Title</label>
+                <sortable>false</sortable>
+            </settings>
+        </column>
+        <column name="position">
+            <settings>
+                <label translate="true">Position</label>
+                <sortable>false</sortable>
+            </settings>
+        </column>
+        <column name="link">
+            <settings>
+                <label translate="true">Link</label>
+                <sortable>false</sortable>
+            </settings>
+        </column>
+        <column name="is_active" component="Magento_Ui/js/grid/columns/select" sortOrder="90">
+            <settings>
+                <options class="Tinik\MoonSlider\Ui\Component\Listing\Column\Items\Status"/>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+                <sortable>false</sortable>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="Tinik\MoonSlider\Ui\Component\Listing\Column\Items\Actions" component="Tinik_MoonSlider/js/listing/actions">
+            <settings>
+                <indexField>item_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

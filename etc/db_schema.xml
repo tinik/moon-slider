@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="moon_slider_slide" resource="default" engine="innodb" comment="Slider Slides Table">
+        <!-- Base -->
+        <column xsi:type="smallint" name="slide_id" padding="5" unsigned="true" nullable="false" identity="true" comment="Slide ID" />
+        <column xsi:type="varchar" name="keyword" nullable="false" length="100" comment="Keyword" />
+        <column xsi:type="varchar" name="show_title" nullable="false" length="1" default="1" comment="Show Title" />
+        <!-- Settings -->
+        <column xsi:type="varchar" name="wrap_class" nullable="true" length="50" default="" comment="Wrap Class" />
+        <column xsi:type="varchar" name="slide_type" nullable="true" length="10" default="" comment="Slide type" />
+        <column xsi:type="varchar" name="width" nullable="true" length="10" default="" comment="Slider Size Width" />
+        <column xsi:type="varchar" name="height" nullable="true" length="10" default="" comment="Slider Size Height" />
+        <column xsi:type="varchar" name="autoplay" nullable="false" length="1" default="1" comment="Autoplay" />
+        <column xsi:type="varchar" name="hover" nullable="false" length="1" default="0" comment="Hover" />
+        <column xsi:type="varchar" name="speed" nullable="false" length="10" default="1000" comment="Speed" />
+        <column xsi:type="varchar" name="arrows" nullable="false" length="1" default="1" comment="Arrows" />
+        <column xsi:type="varchar" name="direction" nullable="true" length="10" comment="Direction" />
+        <!-- Information -->
+        <column xsi:type="smallint" name="is_active" padding="2" nullable="false" default="1" comment="Is Active" />
+        <column xsi:type="timestamp" name="created_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created Time" />
+        <column xsi:type="timestamp" name="updated_time" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated Time" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="slide_id" />
+        </constraint>
+        <constraint xsi:type="unique" referenceId="MOON_SLIDER_KEYWORD">
+            <column name="keyword"/>
+        </constraint>
+    </table>
+
+    <table name="moon_slider_slide_store" resource="default" engine="innodb" comment="Slider Slides Stores Table">
+        <column xsi:type="smallint" name="slide_id" padding="5" unsigned="true" nullable="false" identity="false" comment="Slide ID" />
+        <column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="false" identity="false" comment="Store ID"/>
+        <column xsi:type="varchar" name="title" nullable="true" length="255" comment="Title" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="slide_id" />
+            <column name="store_id" />
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="MOON_SLIDER_STORE_SLIDE_ID" table="moon_slider_slide_store" column="slide_id" referenceTable="moon_slider_slide" referenceColumn="slide_id" onDelete="CASCADE" />
+        <constraint xsi:type="foreign" referenceId="MOON_SLIDER_STORE_STORE_ID" table="moon_slider_slide_store" column="store_id" referenceTable="store" referenceColumn="store_id" onDelete="CASCADE" />
+        <index referenceId="MOON_SLIDER_STORE_INDEX_SLIDE_ID" indexType="btree">
+            <column name="slide_id" />
+        </index>
+        <index referenceId="MOON_SLIDER_STORE_INDEX_STORE_ID" indexType="btree">
+            <column name="store_id" />
+        </index>
+    </table>
+
+    <table name="moon_slider_slide_item" resource="default" engine="innodb" comment="Slider Items Table">
+        <column xsi:type="smallint" name="item_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID" />
+        <column xsi:type="smallint" name="slide_id" padding="5" unsigned="true" nullable="false" identity="false" comment="Slide ID" />
+        <column xsi:type="varchar" name="title" nullable="true" length="255" comment="Title" />
+        <column xsi:type="varchar" name="show_title" nullable="false" length="1" default="1" comment="Show Title" />
+        <column xsi:type="text" name="content" nullable="true" comment="Content" />
+        <column xsi:type="text" name="image" nullable="false" comment="Image" />
+        <column xsi:type="text" name="mobile" nullable="false" comment="Mobile" />
+        <column xsi:type="varchar" name="background" nullable="false" comment="Background color" />
+        <column xsi:type="varchar" name="color" nullable="false" comment="Color" />
+        <column xsi:type="text" name="link" nullable="true" comment="Link" />
+        <column xsi:type="varchar" name="target" nullable="true" comment="target" />
+        <column xsi:type="smallint" name="position" padding="6" nullable="false" default="0" comment="Sort Position" />
+        <column xsi:type="smallint" name="is_active" padding="2" nullable="false" default="1" comment="Is Active" />
+        <column xsi:type="timestamp" name="created_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Creation Time" />
+        <column xsi:type="timestamp" name="updated_time" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Modification Time" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="item_id" />
+        </constraint>
+<!--        <constraint xsi:type="foreign" referenceId="MOON_SLIDER_STORE_SLIDE_ID_MOON_SLIDER_SLIDE_ID" table="moon_slider_slide_store" column="slide_id" referenceTable="moon_slider_slide" referenceColumn="slide_id" onDelete="CASCADE" />-->
+        <index referenceId="MOON_SLIDER_STORE_STORE_ID" indexType="btree">
+            <column name="slide_id" />
+        </index>
+    </table>
+</schema>
