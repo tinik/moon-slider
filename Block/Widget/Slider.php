@@ -61,7 +61,7 @@ class Slider extends Template implements BlockInterface
 
             /** @var \Tinik\MoonSlider\Model\Slide $entity */
             $entity = $this->slideRepository->getByKeyword($keyword, $store->getId());
-            if (!$this->isActive($entity)) {
+            if ($entity->getIsActive() != \Tinik\MoonSlider\Model\Slide::STATUS_ENABLED) {
                 throw new RuntimeException(
                     __('Slider %1 - is not active', $keyword)
                 );
@@ -72,6 +72,10 @@ class Slider extends Template implements BlockInterface
 
                 $exists = [];
                 foreach ($entity->getItems() as $item) {
+                    if ($item->getIsActive() != \Tinik\MoonSlider\Model\Item::STATUS_ENABLED) {
+                        continue;
+                    }
+
                     /** @var \Tinik\MoonSlider\Model\Item $item */
                     $image = $item->getImage();
                     if ($image && $this->imageUploader->isExist($image)) {
@@ -89,11 +93,6 @@ class Slider extends Template implements BlockInterface
             $this->logger->error("MoonSlider - ". $e->getMessage());
             $this->logger->debug($e->getTraceAsString());
         }
-    }
-
-    protected function isActive($entity)
-    {
-        return ($entity->getIsActive() == \Tinik\MoonSlider\Model\Slide::STATUS_ENABLED);
     }
 
     public function getImage($item, $type = 'image')
