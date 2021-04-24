@@ -4,8 +4,8 @@
         <!-- Base -->
         <column xsi:type="smallint" name="slide_id" padding="5" unsigned="true" nullable="false" identity="true" comment="Slide ID" />
         <column xsi:type="varchar" name="keyword" nullable="false" length="100" comment="Keyword" />
-        <column xsi:type="varchar" name="show_title" nullable="false" length="1" default="1" comment="Show Title" />
         <!-- Settings -->
+        <column xsi:type="varchar" name="show_title" nullable="false" length="1" default="1" comment="Show Title" />
         <column xsi:type="varchar" name="wrap_class" nullable="true" length="50" default="" comment="Wrap Class" />
         <column xsi:type="varchar" name="slide_type" nullable="true" length="10" default="" comment="Slide type" />
         <column xsi:type="varchar" name="width" nullable="true" length="10" default="" comment="Slider Size Width" />
@@ -25,6 +25,10 @@
         <constraint xsi:type="unique" referenceId="MOON_SLIDER_KEYWORD">
             <column name="keyword"/>
         </constraint>
+        <!-- Index -->
+        <index referenceId="MOON_SLIDER_SLIDE_INDEX_IS_ACTIVE" indexType="btree">
+            <column name="is_active" />
+        </index>
     </table>
 
     <table name="moon_slider_slide_store" resource="default" engine="innodb" comment="Slider Slides Stores Table">
@@ -37,6 +41,7 @@
         </constraint>
         <constraint xsi:type="foreign" referenceId="MOON_SLIDER_STORE_SLIDE_ID" table="moon_slider_slide_store" column="slide_id" referenceTable="moon_slider_slide" referenceColumn="slide_id" onDelete="CASCADE" />
         <constraint xsi:type="foreign" referenceId="MOON_SLIDER_STORE_STORE_ID" table="moon_slider_slide_store" column="store_id" referenceTable="store" referenceColumn="store_id" onDelete="CASCADE" />
+        <!-- Index -->
         <index referenceId="MOON_SLIDER_STORE_INDEX_SLIDE_ID" indexType="btree">
             <column name="slide_id" />
         </index>
@@ -48,9 +53,7 @@
     <table name="moon_slider_slide_item" resource="default" engine="innodb" comment="Slider Items Table">
         <column xsi:type="smallint" name="item_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID" />
         <column xsi:type="smallint" name="slide_id" padding="5" unsigned="true" nullable="false" identity="false" comment="Slide ID" />
-        <column xsi:type="varchar" name="title" nullable="true" length="255" comment="Title" />
         <column xsi:type="varchar" name="show_title" nullable="false" length="1" default="1" comment="Show Title" />
-        <column xsi:type="text" name="content" nullable="true" comment="Content" />
         <column xsi:type="text" name="image" nullable="false" comment="Image" />
         <column xsi:type="text" name="mobile" nullable="false" comment="Mobile" />
         <column xsi:type="varchar" name="background" nullable="false" comment="Background color" />
@@ -64,9 +67,32 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="item_id" />
         </constraint>
-<!--        <constraint xsi:type="foreign" referenceId="MOON_SLIDER_STORE_SLIDE_ID_MOON_SLIDER_SLIDE_ID" table="moon_slider_slide_store" column="slide_id" referenceTable="moon_slider_slide" referenceColumn="slide_id" onDelete="CASCADE" />-->
-        <index referenceId="MOON_SLIDER_STORE_STORE_ID" indexType="btree">
+        <!-- Index -->
+        <index referenceId="MOON_SLIDER_SLIDE_ITEM_INDEX_SLIDE_ID" indexType="btree">
             <column name="slide_id" />
+        </index>
+        <index referenceId="MOON_SLIDER_SLIDE_ITEM_INDEX_IS_ACTIVE" indexType="btree">
+            <column name="is_active" />
+        </index>
+    </table>
+
+    <table name="moon_slider_slide_item_store" resource="default" engine="innodb" comment="Slider Items Stores Table">
+        <column xsi:type="smallint" name="item_id" padding="10" unsigned="true" nullable="false" identity="false" comment="Entity ID" />
+        <column xsi:type="smallint" name="store_id" padding="5" unsigned="true" nullable="false" identity="false" comment="Store ID"/>
+        <column xsi:type="varchar" name="title" nullable="true" length="255" comment="Title" />
+        <column xsi:type="text" name="content" nullable="true" comment="Content" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="item_id" />
+            <column name="store_id" />
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="MOON_SLIDER_SLIDE_ITEM_STORE_ITEM_ID" table="moon_slider_slide_item_store" column="item_id" referenceTable="moon_slider_slide_item" referenceColumn="item_id" onDelete="CASCADE" />
+        <constraint xsi:type="foreign" referenceId="MOON_SLIDER_SLIDE_ITEM_STORE_STORE_ID" table="moon_slider_slide_item_store" column="store_id" referenceTable="store" referenceColumn="store_id" onDelete="CASCADE" />
+        <!-- Index -->
+        <index referenceId="MOON_SLIDER_SLIDE_ITEM_STORE_INDEX_ITEM_ID" indexType="btree">
+            <column name="item_id" />
+        </index>
+        <index referenceId="MOON_SLIDER_SLIDE_ITEM_STORE_INDEX_STORE_ID" indexType="btree">
+            <column name="store_id" />
         </index>
     </table>
 </schema>

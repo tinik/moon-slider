@@ -6,9 +6,9 @@ use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Ui\Component\MassAction\Filter;
-use Tinik\MoonSlider\Model\SlideRepository;
 use Tinik\MoonSlider\Model\ResourceModel\Slide\Collection;
 use Tinik\MoonSlider\Model\ResourceModel\Slide\CollectionFactory;
+use Tinik\MoonSlider\Model\SlideRepository;
 
 
 class MassActions extends \Magento\Backend\App\Action

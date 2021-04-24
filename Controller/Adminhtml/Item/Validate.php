@@ -10,6 +10,7 @@ use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterf
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\DataObject;
+use Magento\Framework\Exception\RuntimeException;
 use Tinik\MoonSlider\Model\SlideRepository;
 
 
@@ -64,8 +65,8 @@ class Validate extends AbstractAction implements HttpPostActionInterface, HttpGe
     {
         foreach (['title', 'image', 'mobile'] as $field) {
             if (empty($params[$field])) {
-                $message = (string)__('The form is not valid');
-                throw new \RuntimeException($message, 4004);
+                $message = __('The form is not valid');
+                throw new RuntimeException($message, null, 4004);
             }
         }
     }

@@ -2,10 +2,13 @@
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Slide;
 
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Store\Model\Store;
+use Magento\Store\Model\StoreManager;
 
 
-class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+class Collection extends AbstractCollection
 {
 
     /** @var int */
@@ -30,7 +33,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 
     public function addLocale()
     {
-        if (true != $this->getFlag('assign_locale')) {
+        if (true !== $this->getFlag('assign_locale')) {
             $this->joinLocale();
             $this->setFlag('assign_locale', true);
         }
@@ -44,11 +47,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 
         // Reset part if already assign
         $partFrom = $select->getPart($select::FROM);
-        if (true == isset($partFrom['main_store'])) {
+        if (isset($partFrom['main_store'])) {
             unset($partFrom['main_store']);
             $select->setPart($select::FROM, $partFrom);
         }
 
+        $this->setFlag('assign_locale', false);
         return $this;
     }
 
@@ -56,9 +60,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     {
         $this->storeId = $value;
 
-        return $this->unsetLocale()
-            ->setFlag('assign_locale', false)
-            ->addLocale();
+        return $this->unsetLocale()->addLocale();
     }
 
     /**
@@ -66,10 +68,10 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
      */
     public function joinLocale()
     {
-        $ob = \Magento\Framework\App\ObjectManager::getInstance();
+        $ob = ObjectManager::getInstance();
 
-        /** @var \Magento\Store\Model\StoreManager $storeManager */
-        $storeManager = $ob->get(\Magento\Store\Model\StoreManager::class);
+        /** @var StoreManager $storeManager */
+        $storeManager = $ob->get(StoreManager::class);
 
         $defaultStoreId = $storeManager->getDefaultStoreView()->getId();
 
@@ -83,19 +85,20 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 
         if ($this->storeId && $defaultStoreId != $this->storeId) {
             $simple = false;
-            $storeId = $this->storeId;
             $conOn = "$onCon AND (
-                $alias.store_id='$storeId' OR (
+                $alias.store_id='$this->storeId' OR (
                     $alias.store_id='$defaultStoreId' AND main_table.slide_id NOT IN (
-                        SELECT i18n.slide_id FROM $table AS i18n WHERE i18n.store_id = $storeId
+                        SELECT i18n.slide_id FROM $table AS i18n WHERE i18n.store_id = $this->storeId
                     )
                 )
             )";
         }
 
         $select = $this->getSelect();
-        $select->joinLeft([$alias => $table], $conOn, [])
-            ->columns(['title' => "$alias.title", 'store_id' => "$alias.store_id"]);
+        $select->joinLeft([$alias => $table], $conOn, [
+            'title' => "$alias.title",
+            'store_id' => "$alias.store_id"
+        ]);
 
         if ($simple) {
             $select->group('main_table.slide_id');

@@ -7,6 +7,7 @@ use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
+use Psr\Log\LoggerInterface;
 use Tinik\MoonSlider\Api\ItemRepositoryInterface;
 use Tinik\MoonSlider\Api\SlideRepositoryInterface;
 use Tinik\MoonSlider\Model as SliderModel;
@@ -24,6 +25,9 @@ class Save extends AbstractAction
     /** @var JsonFactory */
     private $jsonFactory;
 
+    /** @var LoggerInterface */
+    private $logger;
+
     /**
      *
      * @param Action\Context $context
@@ -37,7 +41,8 @@ class Save extends AbstractAction
         JsonFactory $jsonFactory,
         DataPersistorInterface $dataDataPersistor,
         SlideRepositoryInterface $slideRepository,
-        ItemRepositoryInterface $itemRepository
+        ItemRepositoryInterface $itemRepository,
+        LoggerInterface $logger
     )
     {
         parent::__construct($context, $slideRepository);
@@ -45,6 +50,7 @@ class Save extends AbstractAction
         $this->jsonFactory = $jsonFactory;
         $this->dataPersistor = $dataDataPersistor;
         $this->itemRepository = $itemRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -89,9 +95,8 @@ class Save extends AbstractAction
         $id = $this->getRequest()->getParam('item_id');
         try {
             $entity = $this->getEntity($id);
-            $params = $this->getParams();
 
-            $entity->setData(array_map('trim', $params));
+            $entity->setData($this->getParams());
             $entity->setSlideId($instance->getId());
             if (empty($id)) {
                 $entity->setId(null);
@@ -106,14 +111,12 @@ class Save extends AbstractAction
             ]);
         } catch (LocalizedException $e) {
             $this->logger->critical($e);
-
             return $this->createResponse($id, [
                 'error' => true,
                 'message' => $e->getMessage()
             ]);
         } catch (\Exception $e) {
             $this->logger->critical($e);
-
             return $this->createResponse($id, [
                 'error' => true,
                 'message' => __('Something went wrong while saving the data.'),

@@ -386,9 +386,11 @@
                     <externalProvider>${ $.ns }.moon_slider_items_form_data_source</externalProvider>
                     <exports>
                         <link name="slide_id">${ $.externalProvider }:data.slide_id</link>
+                        <link name="store_id">${ $.externalProvider }:data.store_id</link>
                     </exports>
                     <imports>
                         <link name="slide_id">${ $.provider }:data.slide_id</link>
+                        <link name="store_id">${ $.provider }:data.store_id</link>
                         <link name="onSlideDelete">${ $.ns }.${ $.ns }:onSlideDelete</link>
                     </imports>
                 </settings>

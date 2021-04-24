@@ -138,7 +138,7 @@ class SlideRepository implements SlideRepositoryInterface
         $object = $this->createObject();
         $object->setStoreId($storeId);
 
-        $this->resource->load($object, $value, 'slide_id');
+        $this->resource->load($object, $value, SlideInterface::SLIDE_ID);
         if (!$object->getId()) {
             throw new NoSuchEntityException(
                 __('Object with slide_id "%1" does not exist.', $value)

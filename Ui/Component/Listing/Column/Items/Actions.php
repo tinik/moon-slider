@@ -2,10 +2,10 @@
 
 namespace Tinik\MoonSlider\Ui\Component\Listing\Column\Items;
 
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\UiComponent\ContextInterface;
 use Magento\Framework\View\Element\UiComponentFactory;
 use Magento\Ui\Component\Listing\Columns\Column;
-use Magento\Framework\UrlInterface;
 
 
 class Actions extends Column
@@ -37,6 +37,7 @@ class Actions extends Column
 
     public function prepareDataSource(array $dataSource)
     {
+        $storeId = $this->context->getRequestParam('store_id');
         if (isset($dataSource['data']['items'])) {
             foreach ($dataSource['data']['items'] as &$item) {
                 if (isset($item['item_id'])) {
@@ -56,7 +57,7 @@ class Actions extends Column
                                 'provider' => 'moon_slider_slides_form.moon_slider_slides_form.items.item_form.moon_slider_items_form_loader',
                                 'target' => 'render',
                                 'params' => [
-                                    'store_id' => $item['store_id'] ?? 0,
+                                    'store_id' => $item['store_id'] ?? $storeId,
                                     'slide_id' => $item['slide_id'],
                                     'item_id'  => $item['item_id'],
                                 ],
@@ -70,7 +71,7 @@ class Actions extends Column
                         'href'  => $this->getUrl("delete", [
                             'slide_id' => $item['slide_id'],
                             'item_id'  => $item['item_id'],
-                            'store_id' => $item['store_id'] ?? 0,
+                            'store_id' => $item['store_id'] ?? $storeId,
                         ]),
                         'confirm' => [
                             'title'   => __('Delete'),

@@ -17,7 +17,7 @@
     </argument>
     <dataSource name="moon_slider_slides_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
-            <argument name="class" xsi:type="string">Tinik\MoonSlider\Ui\Component\Listing\DataProviders\MoonSlider\Slider\Slides</argument>
+            <argument name="class" xsi:type="string">Tinik\MoonSlider\Ui\Component\Listing\DataProviders\Slides</argument>
             <argument name="name" xsi:type="string">moon_slider_slides_data_source</argument>
             <argument name="primaryFieldName" xsi:type="string">slide_id</argument>
             <argument name="requestFieldName" xsi:type="string">slide_id</argument>

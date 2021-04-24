@@ -15,7 +15,7 @@ class Transition implements OptionSourceInterface
      */
     public function toOptionArray()
     {
-        if (true == empty($this->options)) {
+        if (empty($this->options)) {
             $values = [];
             $delay  = range(100, 10000, 100);
             foreach ($delay as $row) {

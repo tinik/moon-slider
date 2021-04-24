@@ -2,11 +2,13 @@
 
 namespace Tinik\MoonSlider\Model\ResourceModel;
 
+use Magento\Framework\DataObject;
 use Magento\Framework\EntityManager\EntityManager;
 use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
+use Tinik\MoonSlider\Model\ResourceModel\Item\Collection;
 use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory as ItemCollectionFactory;
 
 
@@ -28,7 +30,8 @@ class Slide extends AbstractDb
         MetadataPool $metadataPool,
         ItemCollectionFactory $itemCollection,
         $connectionName = null
-    ) {
+    )
+    {
         parent::__construct($context, $connectionName);
 
         $this->entityManager = $entityManager;
@@ -45,15 +48,16 @@ class Slide extends AbstractDb
      *
      * @param string $slideId
      * @param array $filter
-     * @return array|\Magento\Framework\DataObject[]
+     * @return array|DataObject[]
      */
-    public function getItems(string $slideId, array $filter = [])
+    public function getItems(string $slideId, string $storeId, array $filter = [])
     {
-        /** @var \Tinik\MoonSlider\Model\ResourceModel\Item\Collection $collection */
+        /** @var Collection $collection */
         $collection = $this->itemCollection->create();
+        $collection->setStoreId($storeId);
         $collection->setOrder('position', $collection::SORT_ORDER_DESC);
 
-        if (true == is_array($filter) && !empty($filter)) {
+        if (is_array($filter) && !empty($filter)) {
             foreach ($filter as $key => $value) {
                 $collection->addFilter($key, $value);
             }
@@ -77,15 +81,15 @@ class Slide extends AbstractDb
     }
 
     /**
-    * @inheritDoc
-    */
+     * @inheritDoc
+     */
     public function delete(AbstractModel $object)
     {
         $this->entityManager->delete($object);
         return $this;
     }
 
-    public function load(\Magento\Framework\Model\AbstractModel $object, $value, $field = null)
+    public function load(AbstractModel $object, $value, $field = null)
     {
         $storeId = $object->getStoreId();
 

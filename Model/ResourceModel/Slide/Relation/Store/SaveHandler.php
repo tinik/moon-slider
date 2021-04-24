@@ -2,8 +2,8 @@
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store;
 
-use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Slide;
 
@@ -28,7 +28,8 @@ class SaveHandler implements ExtensionInterface
     public function __construct(
         MetadataPool $metadataPool,
         Slide $resource
-    ) {
+    )
+    {
         $this->metadataPool = $metadataPool;
         $this->resource = $resource;
     }
@@ -37,7 +38,6 @@ class SaveHandler implements ExtensionInterface
      * @param object $entity
      * @param array $arguments
      * @return object
-     * @throws \Exception
      */
     public function execute($entity, $arguments = [])
     {
@@ -47,7 +47,7 @@ class SaveHandler implements ExtensionInterface
         $data = [
             'slide_id' => (int)$entity->getId(),
             'store_id' => (int)$entity->getStoreId(),
-            'title'    => $entity->getTitle(),
+            'title' => $entity->getTitle(),
         ];
 
         $select = $connection->select()->from(['t' => $table])

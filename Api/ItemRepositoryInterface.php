@@ -6,11 +6,11 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Tinik\MoonSlider\Api\Data\ItemInterface;
 
 
-interface ItemRepositoryInterface 
+interface ItemRepositoryInterface
 {
     public function save(ItemInterface $page);
 
-    public function getById($id);
+    public function getById($value);
 
     public function getList(SearchCriteriaInterface $criteria);
 

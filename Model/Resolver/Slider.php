@@ -6,14 +6,9 @@ use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlNoSuchEntityException;
 use Magento\Framework\GraphQl\Query\ResolverInterface;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
-use Magento\Framework\UrlInterface;
-use Magento\Store\Model\StoreManagerInterface;
-use Tinik\MoonSlider\Api\Data\SlideInterface;
-use Tinik\MoonSlider\Model\Slide;
 use Tinik\MoonSlider\Api\SlideRepositoryInterface;
-use Tinik\MoonSlider\Model\ResourceModel\Slide\CollectionFactory as SlideCollectionFactory;
-use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory as ItemCollectionFactory;
 use Tinik\MoonSlider\Helper\ImageUploader;
+use Tinik\MoonSlider\Model\Slide;
 
 
 class Slider implements ResolverInterface
@@ -37,7 +32,6 @@ class Slider implements ResolverInterface
     public function resolve(Field $field, $context, ResolveInfo $info, array $value = null, array $args = null)
     {
         $storeId = $context->getExtensionAttributes()->getStore()->getId();
-
 
         /** @var Slide $entity */
         $entity = $this->slideRepository->getByKeyword($args['keyword'], $storeId);

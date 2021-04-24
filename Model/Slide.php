@@ -2,9 +2,9 @@
 
 namespace Tinik\MoonSlider\Model;
 
-use \Magento\Framework\Model\AbstractModel;
-use \Magento\Framework\DataObject\IdentityInterface;
-use \Tinik\MoonSlider\Api\Data\SlideInterface;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\Model\AbstractModel;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 
 
 class Slide extends AbstractModel implements SlideInterface, IdentityInterface
@@ -82,7 +82,8 @@ class Slide extends AbstractModel implements SlideInterface, IdentityInterface
 
     public function getItems(array $filter = [])
     {
-        $entityId = $this->getId();
-        return $this->_getResource()->getItems($entityId, $filter);
+        $slideId = $this->getId();
+        $storeId = $this->getStoreId();
+        return $this->_getResource()->getItems($slideId, $storeId, $filter);
     }
 }

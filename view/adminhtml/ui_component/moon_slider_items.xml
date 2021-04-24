@@ -75,7 +75,7 @@
         <settings>
             <updateUrl path="mui/index/render"/>
         </settings>
-        <dataProvider class="Tinik\MoonSlider\Ui\Component\Listing\DataProviders\MoonSlider\Item\Items" name="moon_slider_items_data_source">
+        <dataProvider class="Tinik\MoonSlider\Ui\Component\Listing\DataProviders\Items" name="moon_slider_items_data_source">
             <settings>
                 <requestFieldName>item_id</requestFieldName>
                 <primaryFieldName>item_id</primaryFieldName>
@@ -96,18 +96,13 @@
                 <sorting>asc</sorting>
             </settings>
         </column>
-        <column name="image" class="Tinik\MoonSlider\Ui\Component\Listing\Column\Items\Thumbnail" component="Magento_Ui/js/grid/columns/thumbnail" sortOrder="20">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="align" xsi:type="string">left</item>
-                </item>
-            </argument>
+        <column name="image" class="Tinik\MoonSlider\Ui\Component\Listing\Column\Items\Thumbnail" component="Magento_Ui/js/grid/columns/thumbnail" sortOrder="10">
             <settings>
                 <label translate="true">Thumbnail</label>
                 <sortable>false</sortable>
             </settings>
         </column>
-        <column name="title">
+        <column name="title" class="Tinik\MoonSlider\Ui\Component\Listing\Column\Items\Title" sortOrder="20">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Title</label>
@@ -120,7 +115,7 @@
                 <sortable>false</sortable>
             </settings>
         </column>
-        <column name="link">
+        <column name="link" component="Magento_Ui/js/grid/columns/link">
             <settings>
                 <label translate="true">Link</label>
                 <sortable>false</sortable>

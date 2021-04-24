@@ -23,16 +23,6 @@ class Status extends AbstractSource implements SourceInterface, OptionSourceInte
     }
 
     /**
-     * Retrieve Saleable Status Ids, default Product Enable status
-     *
-     * @return int[]
-     */
-    public function getSaleableStatusIds()
-    {
-        return [self::STATUS_ENABLED];
-    }
-
-    /**
      * Retrieve option array
      *
      * @return string[]

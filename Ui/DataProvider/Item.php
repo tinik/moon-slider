@@ -5,8 +5,8 @@ namespace Tinik\MoonSlider\Ui\DataProvider;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\UrlInterface;
-use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory;
 use Tinik\MoonSlider\Helper\ImageUploader;
+use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory;
 
 
 class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
@@ -63,6 +63,19 @@ class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
+    private function getQueryCollection()
+    {
+        /** @var \Tinik\MoonSlider\Model\ResourceModel\Item\Collection $collection */
+        $this->collection->setPageSize(1);
+
+        $params = $this->request->getParams();
+        if ($params && isset($params['store_id'])) {
+            $this->collection->setStoreId($params['store_id']);
+        }
+
+        return $this->collection;
+    }
+
     /**
      * Get data
      *
@@ -74,7 +87,7 @@ class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
             return $this->loadedData;
         }
 
-        $items = $this->collection->getItems();
+        $items = $this->getQueryCollection()->getItems();
         foreach ($items as $item) {
             $this->setItemData($item);
         }
@@ -106,7 +119,7 @@ class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
             $info = [];
             if (!empty($values[$key])) {
                 $details = $this->uploader->getDetails($values[$key], true);
-                if ($details && !empty($details)) {
+                if ($details) {
                     $info = [$details];
                 }
             }

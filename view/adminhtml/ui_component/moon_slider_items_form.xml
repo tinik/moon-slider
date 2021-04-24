@@ -30,8 +30,8 @@
         </settings>
         <dataProvider class="Tinik\MoonSlider\Ui\DataProvider\Item" name="moon_slider_items_form_data_source">
             <settings>
+                <primaryFieldName>main_table.item_id</primaryFieldName>
                 <requestFieldName>item_id</requestFieldName>
-                <primaryFieldName>item_id</primaryFieldName>
             </settings>
         </dataProvider>
     </dataSource>
@@ -46,13 +46,19 @@
             <dataScope/>
         </settings>
         <field name="item_id" formElement="input">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="visible" xsi:type="boolean">false</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="dataScope" xsi:type="string">slide_id</item>
-                </item>
-            </argument>
+            <settings>
+                <visible>false</visible>
+            </settings>
+        </field>
+        <field name="slide_id" formElement="input">
+            <settings>
+                <visible>false</visible>
+            </settings>
+        </field>
+        <field name="store_id" formElement="input">
+            <settings>
+                <visible>false</visible>
+            </settings>
         </field>
         <field name="is_active">
             <argument name="data" xsi:type="array">

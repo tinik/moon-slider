@@ -16,9 +16,9 @@ class Thumbnail extends \Magento\Ui\Component\Listing\Columns\Column
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
+        ImageUploader $uploader,
         array $components = [],
-        array $data = [],
-        ImageUploader $uploader
+        array $data = []
     )
     {
         parent::__construct($context, $uiComponentFactory, $components, $data);
@@ -38,7 +38,6 @@ class Thumbnail extends \Magento\Ui\Component\Listing\Columns\Column
                 $row[$fieldname . '_src'] = $uri;
                 $row[$fieldname . '_orig_src'] = $uri;
             }
-//echo "<pre>";var_dump($source['data']['items']);exit;
         }
 
         return $source;

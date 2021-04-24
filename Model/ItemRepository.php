@@ -70,13 +70,14 @@ class ItemRepository implements ItemRepositoryInterface
         return true;
     }
 
-    public function getById($id)
+    public function getById($value, $storeId = null)
     {
         $object = $this->objectFactory->create();
+        $object->setStoreId($storeId);
 
-        $this->objectResourceModel->load($object, $id);
+        $this->objectResourceModel->load($object, $value, ItemInterface::ITEM_ID);
         if (!$object->getId()) {
-            throw new NoSuchEntityException(__('Object with id "%1" does not exist.', $id));
+            throw new NoSuchEntityException(__('Object with id "%1" does not exist.', $value));
         }
 
         return $object;

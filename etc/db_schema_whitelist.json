@@ -1,54 +1,93 @@
 {
-  "moon_slider_slide": {
-    "column": {
-      "slide_id": true,
-      "keyword": true,
-      "is_active": true,
-      "created_time": true,
-      "updated_time": true
+    "moon_slider_slide": {
+        "column": {
+            "slide_id": true,
+            "keyword": true,
+            "is_active": true,
+            "created_time": true,
+            "updated_time": true,
+            "show_title": true,
+            "wrap_class": true,
+            "slide_type": true,
+            "width": true,
+            "height": true,
+            "autoplay": true,
+            "hover": true,
+            "speed": true,
+            "arrows": true,
+            "direction": true
+        },
+        "index": {
+            "MOON_SLIDER_KEYWORD": true,
+            "MOON_SLIDER_SLIDE_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MOON_SLIDER_SLIDE_KEYWORD": true
+        }
     },
-    "index": {
-      "MOON_SLIDER_KEYWORD": true
+    "moon_slider_slide_store": {
+        "column": {
+            "slide_id": true,
+            "store_id": true,
+            "title": true
+        },
+        "index": {
+            "MOON_SLIDER_STORE_INDEX_STORE_ID": true,
+            "MOON_SLIDER_STORE_SLIDE_ID": true,
+            "MOON_SLIDER_STORE_STORE_ID": true,
+            "MOON_SLIDER_SLIDE_STORE_SLIDE_ID": true,
+            "MOON_SLIDER_SLIDE_STORE_STORE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "MOON_SLIDER_SLIDE_STORE_SLIDE_ID_MOON_SLIDER_SLIDE_SLIDE_ID": true,
+            "MOON_SLIDER_SLIDE_STORE_STORE_ID_STORE_STORE_ID": true
+        }
     },
-    "constraint": {
-      "PRIMARY": true
+    "moon_slider_slide_item": {
+        "column": {
+            "item_id": true,
+            "slide_id": true,
+            "title": true,
+            "content": true,
+            "image": true,
+            "link": true,
+            "target": true,
+            "position": true,
+            "is_active": true,
+            "created_time": true,
+            "updated_time": true,
+            "show_title": true,
+            "mobile": true,
+            "background": true,
+            "color": true
+        },
+        "index": {
+            "MOON_SLIDER_STORE_SLIDE_ID_MOON_SLIDER_SLIDE_ID": true,
+            "MOON_SLIDER_STORE_STORE_ID": true,
+            "MOON_SLIDER_SLIDE_ITEM_SLIDE_ID": true,
+            "MOON_SLIDER_SLIDE_ITEM_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "moon_slider_slide_item_store": {
+        "column": {
+            "item_id": true,
+            "store_id": true,
+            "title": true,
+            "content": true
+        },
+        "index": {
+            "MOON_SLIDER_SLIDE_ITEM_STORE_ITEM_ID": true,
+            "MOON_SLIDER_SLIDE_ITEM_STORE_STORE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_70ECA39BFD84A0C34FC8B287EBBEB1DA": true,
+            "MOON_SLIDER_SLIDE_ITEM_STORE_STORE_ID_STORE_STORE_ID": true
+        }
     }
-  },
-  "moon_slider_slide_store": {
-    "column": {
-      "slide_id": true,
-      "store_id": true,
-      "title": true
-    },
-    "index": {
-      "MOON_SLIDER_STORE_INDEX_STORE_ID": true,
-      "MOON_SLIDER_STORE_SLIDE_ID": true,
-      "MOON_SLIDER_STORE_STORE_ID": true
-    },
-    "constraint": {
-      "PRIMARY": true
-    }
-  },
-  "moon_slider_slide_item": {
-    "column": {
-      "item_id": true,
-      "slide_id": true,
-      "title": true,
-      "content": true,
-      "image": true,
-      "link": true,
-      "target": true,
-      "position": true,
-      "is_active": true,
-      "created_time": true,
-      "updated_time": true
-    },
-    "index": {
-      "MOON_SLIDER_STORE_SLIDE_ID_MOON_SLIDER_SLIDE_ID": true,
-      "MOON_SLIDER_STORE_STORE_ID": true
-    },
-    "constraint": {
-      "PRIMARY": true
-    }
-  }
 }

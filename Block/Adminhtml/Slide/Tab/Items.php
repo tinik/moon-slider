@@ -4,7 +4,6 @@
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Tab;
 
 use Magento\Backend\Block\Widget\Grid;
-use Magento\Backend\Block\Widget\Grid\Column;
 use Magento\Backend\Block\Widget\Grid\Extended;
 use Magento\Catalog\Model\Product\Attribute\Source\Status;
 use Magento\Catalog\Model\Product\Visibility;

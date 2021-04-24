@@ -1,6 +1,6 @@
 <?php
 
-namespace Tinik\MoonSlider\Ui\Component\Listing\DataProviders\MoonSlider\Item;
+namespace Tinik\MoonSlider\Ui\Component\Listing\DataProviders;
 
 
 use Magento\Framework\App\RequestInterface;
@@ -28,15 +28,16 @@ class Items extends \Magento\Ui\DataProvider\AbstractDataProvider
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
         $this->request = $request;
 
+        $slideId = $this->request->getParam('slide_id');
+        $storeId = $this->request->getParam('store_id', 0);
+
         /** @var \Tinik\MoonSlider\Model\ResourceModel\Item\Collection $collection */
         $collection = $collectionFactory->create();
-        $collection->addOrder('position', $collection::SORT_ORDER_DESC);
-        $collection->addFieldToFilter('slide_id', [
-            'eq' => $this->request->getParam('slide_id')
-        ]);
-
-//var_dump($request->getParams());
-//exit;
+        $collection->setStoreId($storeId)
+            ->addOrder('position', $collection::SORT_ORDER_DESC)
+            ->addFieldToFilter('slide_id', [
+                'eq' => $slideId
+            ]);
 
         $this->collection = $collection;
     }

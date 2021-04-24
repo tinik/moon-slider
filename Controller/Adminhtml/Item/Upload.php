@@ -4,7 +4,6 @@ namespace Tinik\MoonSlider\Controller\Adminhtml\Item;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Psr\Log\LoggerInterface;
 use Tinik\MoonSlider\Helper\ImageUploader;
 
 

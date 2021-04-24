@@ -1,13 +1,12 @@
 <?php
 
-namespace Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store;
+namespace Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store;
 
-use Exception;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilderFactory;
 use Psr\Log\LoggerInterface;
+use Tinik\MoonSlider\Model\Item;
 use Tinik\MoonSlider\Model\ItemRepository;
-use Tinik\MoonSlider\Model\Slide;
 
 
 class DeleteHandler
@@ -41,11 +40,11 @@ class DeleteHandler
      */
     public function execute($entity, $arguments = [])
     {
-        /** @var Slide $entity */
+        /** @var Item $entity */
         if ($entity->getId()) {
             /** @var SearchCriteriaBuilder $searchBuilder */
             $searchBuilder = $this->searchBuilderFactory->create();
-            $searchBuilder->addFilter('slide_id', $entity->getId());
+            $searchBuilder->addFilter(Item::ITEM_ID, $entity->getId());
 
             $results = $this->repository->getList($searchBuilder->create());
             if ($results->getTotalCount()) {

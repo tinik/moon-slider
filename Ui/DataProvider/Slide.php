@@ -3,7 +3,6 @@
 namespace Tinik\MoonSlider\Ui\DataProvider;
 
 use Magento\Framework\App\RequestInterface;
-use Magento\Store\Model\Store;
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
 use Magento\Ui\DataProvider\Modifier\PoolInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Slide\CollectionFactory;
@@ -54,19 +53,19 @@ class Slide extends \Magento\Ui\DataProvider\AbstractDataProvider
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
     }
 
-    public function getData()
+    private function setQueryCollection()
     {
-        /** @var \Tinik\MoonSlider\Model\ResourceModel\Slide\Collection $collection */
-        $collection = $this->getCollection()
-            ->setPageSize(1);
+        $this->collection->setPageSize(1);
 
         $params = $this->request->getParams();
-        if ($params && !empty($params['slide_id'])) {
-            $storeId = $params['store'] ?? null;
-            if ($storeId) {
-                $collection->setStoreId($storeId);
-            }
+        if (isset($params['store'])) {
+            $this->collection->setStoreId($params['store']);
         }
+    }
+
+    public function getData()
+    {
+        $this->setQueryCollection();
 
         /** @var ModifierInterface $modifier */
         foreach ($this->pool->getModifiersInstances() as $modifier) {

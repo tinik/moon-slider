@@ -1,6 +1,6 @@
 <?php
 
-namespace Tinik\MoonSlider\Ui\Component\Listing\DataProviders\MoonSlider\Slider;
+namespace Tinik\MoonSlider\Ui\Component\Listing\DataProviders;
 
 use Tinik\MoonSlider\Model\ResourceModel\Slide\CollectionFactory;
 

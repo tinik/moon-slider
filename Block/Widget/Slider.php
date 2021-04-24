@@ -2,13 +2,13 @@
 
 namespace Tinik\MoonSlider\Block\Widget;
 
+use Magento\Framework\Exception\RuntimeException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Widget\Block\BlockInterface;
 use Psr\Log\LoggerInterface;
 use Tinik\MoonSlider\Api\SlideRepositoryInterface;
 use Tinik\MoonSlider\Helper\ImageUploader;
-use Psr;
 
 
 class Slider extends Template implements BlockInterface
@@ -52,15 +52,19 @@ class Slider extends Template implements BlockInterface
         try {
             $keyword = $this->getData('keyword');
             if (empty($keyword)) {
-                throw new \RuntimeException('Keyword is required params');
+                throw new RuntimeException(
+                    __('Keyword is required params')
+                );
             }
 
             $store = $this->_storeManager->getStore();
 
-            /** @var \Tinik\MoonSlider\Model\Item $entity */
+            /** @var \Tinik\MoonSlider\Model\Slide $entity */
             $entity = $this->slideRepository->getByKeyword($keyword, $store->getId());
-            if (false == $this->isActive($entity)) {
-                throw new \RuntimeException('Slider is not active '. $keyword);
+            if (!$this->isActive($entity)) {
+                throw new RuntimeException(
+                    __('Slider %1 - is not active', $keyword)
+                );
             }
 
             if ($entity) {
@@ -83,15 +87,13 @@ class Slider extends Template implements BlockInterface
         } catch (\Exception $e) {
             // write to logger exception message
             $this->logger->error("MoonSlider - ". $e->getMessage());
-
-            var_dump($e->getMessage(), __METHOD__);
-            exit;
+            $this->logger->debug($e->getTraceAsString());
         }
     }
 
     protected function isActive($entity)
     {
-        return ($entity->getIsActive() == \Tinik\MoonSlider\Model\Item::STATUS_ENABLED);
+        return ($entity->getIsActive() == \Tinik\MoonSlider\Model\Slide::STATUS_ENABLED);
     }
 
     public function getImage($item, $type = 'image')

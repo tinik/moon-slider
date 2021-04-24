@@ -2,7 +2,6 @@
 
 namespace Tinik\MoonSlider\Ui\DataProvider\Modifier\Slide\Form;
 
-use Magento\Framework\Registry;
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
 
 

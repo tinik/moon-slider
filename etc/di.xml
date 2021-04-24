@@ -7,6 +7,7 @@
         <arguments>
             <argument name="hydrators" xsi:type="array">
                 <item name="Tinik\MoonSlider\Api\Data\SlideInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
+                <item name="Tinik\MoonSlider\Api\Data\ItemInterface" xsi:type="string">Magento\Framework\EntityManager\AbstractModelHydrator</item>
             </argument>
         </arguments>
     </type>
@@ -17,6 +18,10 @@
                     <item name="entityTableName" xsi:type="string">moon_slider_slide</item>
                     <item name="identifierField" xsi:type="string">slide_id</item>
                 </item>
+                <item name="Tinik\MoonSlider\Api\Data\ItemInterface" xsi:type="array">
+                    <item name="entityTableName" xsi:type="string">moon_slider_slide_item</item>
+                    <item name="identifierField" xsi:type="string">item_id</item>
+                </item>
             </argument>
         </arguments>
     </type>
@@ -24,17 +29,31 @@
         <arguments>
             <argument name="extensionActions" xsi:type="array">
                 <item name="Tinik\MoonSlider\Api\Data\SlideInterface" xsi:type="array">
-                    <item name="read" xsi:type="array">
-                        <item name="slideReader" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store\ReadHandler</item>
-                    </item>
                     <item name="create" xsi:type="array">
                         <item name="slideCreator" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store\SaveHandler</item>
+                    </item>
+                    <item name="read" xsi:type="array">
+                        <item name="slideReader" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store\ReadHandler</item>
                     </item>
                     <item name="update" xsi:type="array">
                         <item name="slideUpdater" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store\SaveHandler</item>
                     </item>
                     <item name="delete" xsi:type="array">
                         <item name="slideRemover" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store\DeleteHandler</item>
+                    </item>
+                </item>
+                <item name="Tinik\MoonSlider\Api\Data\ItemInterface" xsi:type="array">
+                    <item name="create" xsi:type="array">
+                        <item name="itemCreator" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store\SaveHandler</item>
+                    </item>
+                    <item name="read" xsi:type="array">
+                        <item name="slideReader" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store\ReadHandler</item>
+                    </item>
+                    <item name="update" xsi:type="array">
+                        <item name="itemUpdater" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store\SaveHandler</item>
+                    </item>
+                    <item name="delete" xsi:type="array">
+                        <item name="itemRemover" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store\DeleteHandler</item>
                     </item>
                 </item>
             </argument>
@@ -54,18 +73,6 @@
     <type name="Tinik\MoonSlider\Ui\DataProvider\Slide">
         <arguments>
             <argument name="pool" xsi:type="object">Tinik\MoonSlider\Ui\DataProvider\Slide\Form\Modifier\Pool</argument>
-        </arguments>
-    </type>
-
-    <type name="Magento\Framework\EntityManager\Operation\ExtensionPool">
-        <arguments>
-            <argument name="extensionActions" xsi:type="array">
-                <item name="Tinik\MoonSlider\Api\Data\SlideInterface" xsi:type="array">
-                    <item name="read" xsi:type="array">
-                        <item name="storeReader" xsi:type="string">Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store\ReadHandler</item>
-                    </item>
-                </item>
-            </argument>
         </arguments>
     </type>
 </config>

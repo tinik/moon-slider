@@ -3,7 +3,6 @@
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button;
 
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
-use Magento\Store\Model\Store;
 
 class Generic implements ButtonProviderInterface
 {

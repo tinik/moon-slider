@@ -18,6 +18,7 @@ define([
             this._super();
 
             this.params['slide_id'] = this.slide_id;
+            this.params['store_id'] = this.store_id;
         },
         onAction: function (data) {
             debugger;
