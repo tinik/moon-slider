@@ -14,7 +14,7 @@ class Items extends Column
             $context = $this->getContext();
 
             $items = &$dataSource['data']['items'];
-            foreach ($items as $key => &$row) {
+            foreach ($items as &$row) {
                 $name = $this->getData('name');
 
                 $row[$name]['view'] = [

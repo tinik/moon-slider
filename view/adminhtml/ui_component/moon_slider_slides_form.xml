@@ -147,7 +147,7 @@
                     </additionalClasses>
                     <label translate="true">Height x Width</label>
                     <scopeLabel>[GLOBAL VIEW]</scopeLabel>
-                    <notice translate="true">Note, this field is not required</notice>
+                    <notice translate="true">Note, this field is not required (Ex: 100px, 77pt, 20em, .5ex or 50%)</notice>
                     <validation>
                         <rule name="validate-css-length" xsi:type="boolean">true</rule>
                     </validation>

@@ -4,6 +4,7 @@ namespace Tinik\MoonSlider\Controller\Adminhtml\Item;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Exception\RuntimeException;
 use Tinik\MoonSlider\Helper\ImageUploader;
 
 
@@ -32,7 +33,9 @@ class Upload extends Action
         try {
             $name = $this->getRequest()->getParam('param_name');
             if (!$name) {
-                throw new \RuntimeException('Not found params name');
+                throw new RuntimeException(
+                    __('Not found params name')
+                );
             }
 
             $result = $this->uploader->save($name, 'moon-slider');

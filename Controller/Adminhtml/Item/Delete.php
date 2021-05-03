@@ -47,7 +47,7 @@ class Delete extends AbstractAction
     public function execute()
     {
         $request = $this->getRequest();
-        if ($request->isPost() == false) {
+        if (!$request->isPost()) {
             throw $this->createException('Type Protocol is not correct');
         }
 

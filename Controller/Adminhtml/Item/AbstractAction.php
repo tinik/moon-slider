@@ -32,14 +32,14 @@ abstract class AbstractAction extends \Magento\Backend\App\Action
             $slide_id = $this->getRequest()->getParam('slide_id');
             if (empty($slide_id)) {
                 throw new \Magento\Framework\Exception\NotFoundException(
-                    __('Parameter is incorrect.')
+                    __(self::DEFAULT_MESSAGE)
                 );
             }
 
             $slide = $this->slideRepository->getById($slide_id);
             if (empty($slide) || !$slide) {
                 throw new \Magento\Framework\Exception\NotFoundException(
-                    __('Parameter is incorrect.')
+                    __(self::DEFAULT_MESSAGE)
                 );
             }
 
