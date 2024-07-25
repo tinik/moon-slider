@@ -1,59 +1,62 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Item;
 
 use Magento\Backend\App\Action;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\NotFoundException;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Api\SlideRepositoryInterface;
 
-
-abstract class AbstractAction extends \Magento\Backend\App\Action
+abstract class AbstractAction extends Action
 {
-
     /** Authorization level of a basic admin session */
-    const ADMIN_RESOURCE = 'Tinik_MoonSlider::items';
+    public const ADMIN_RESOURCE = 'Tinik_MoonSlider::items';
 
-    const DEFAULT_MESSAGE = 'Parameter is incorrect.';
+    protected const DEFAULT_MESSAGE = 'Parameter is incorrect.';
 
-    /** @var SlideRepositoryInterface */
-    protected $slideRepository;
-
-    protected $entity = null;
-
-    public function __construct(Action\Context $context, SlideRepositoryInterface $slideRepository)
-    {
+    /**
+     * Construct
+     *
+     * @param Action\Context $context
+     * @param SlideRepositoryInterface $slideRepository
+     */
+    public function __construct(
+        Action\Context $context,
+        protected readonly SlideRepositoryInterface $slideRepository
+    ) {
         parent::__construct($context);
-
-        $this->slideRepository = $slideRepository;
     }
 
-    protected function getInstance()
+    /**
+     * Get current slider by id
+     *
+     * @return SlideInterface
+     * @throws NotFoundException
+     * @throws NoSuchEntityException
+     */
+    protected function getInstance(): SlideInterface
     {
-        if (!$this->entity) {
-            $slide_id = $this->getRequest()->getParam('slide_id');
-            if (empty($slide_id)) {
-                throw new \Magento\Framework\Exception\NotFoundException(
-                    __(self::DEFAULT_MESSAGE)
-                );
-            }
-
-            $slide = $this->slideRepository->getById($slide_id);
-            if (empty($slide) || !$slide) {
-                throw new \Magento\Framework\Exception\NotFoundException(
-                    __(self::DEFAULT_MESSAGE)
-                );
-            }
-
-            $this->entity = $slide;
+        $slideId = $this->getRequest()->getParam('slide_id');
+        if (empty($slideId)) {
+            throw $this->createException(self::DEFAULT_MESSAGE);
         }
 
-        return $this->entity;
+        return $this->slideRepository->getById($slideId);
     }
 
-    protected function createException($message, array $params = [])
+    /**
+     * Create exception for throw
+     *
+     * @param string $message
+     * @param array $params
+     * @return NotFoundException
+     */
+    protected function createException(string $message, array $params = []): NotFoundException
     {
-        return new \Magento\Framework\Exception\NotFoundException(
+        return new NotFoundException(
             __($message, $params)
         );
     }
-
 }

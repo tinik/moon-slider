@@ -1,43 +1,61 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button;
 
+use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
 class Generic implements ButtonProviderInterface
 {
-
-    /** @var \Magento\Backend\Block\Widget\Context */
-    protected $context;
-
-    /** @var string */
-    static private $store;
-
+    /**
+     * Construct
+     *
+     * @param Context $context
+     */
     public function __construct(
-        \Magento\Backend\Block\Widget\Context $context
-    )
-    {
-        $this->context = $context;
+        protected readonly Context $context
+    ) {
     }
 
-    public function getSlideId()
+    /**
+     * Get slider id from request data
+     *
+     * @return int
+     */
+    public function getSlideId(): int
     {
-        return $this->context->getRequest()
-            ->getParam('slide_id');
+        return (int)$this->context->getRequest()->getParam('slide_id');
     }
 
-    public function getStoreId()
+    /**
+     * Get store id from request
+     *
+     * @return int
+     */
+    public function getStoreId(): int
     {
-        return $this->context->getRequest()
-                ->getParam('store');
+        return (int)$this->context->getRequest()->getParam('store');
     }
 
-    public function getUrl($route = '', $params = [])
+    /**
+     * Generate url link by
+     *
+     * @param string $route
+     * @param array $params
+     * @return string
+     */
+    public function getUrl(string $route = '', array $params = []): string
     {
         return $this->context->getUrlBuilder()->getUrl($route, $params);
     }
 
-    public function getButtonData()
+    /**
+     * Get button data
+     *
+     * @return array
+     */
+    public function getButtonData(): array
     {
         return [];
     }

@@ -1,44 +1,37 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store;
 
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
+use Tinik\MoonSlider\Api\Data\ItemInterface;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Item;
-
 
 class ReadHandler implements ExtensionInterface
 {
-
-    /** @var MetadataPool */
-    protected $metadataPool;
-
-    /** @var Item */
-    protected $resource;
-
     /**
+     * Construct
      *
-     * @param MetadataPool $metadataPool
-     * @param Item $resourcePage
+     * @param Item $resource
      */
-    public function __construct(MetadataPool $metadataPool, Item $resourcePage)
-    {
-        $this->metadataPool = $metadataPool;
-        $this->resource = $resourcePage;
+    public function __construct(
+        private readonly Item $resource
+    ) {
     }
 
     /**
+     * Handle read slider
      *
-     * @param object $entity
+     * @param SlideInterface $entity
      * @param array $arguments
-     * @return object
+     * @return SlideInterface
      */
-    public function execute($entity, $arguments = [])
+    public function execute($entity, $arguments = []): SlideInterface
     {
-        /** @var \Tinik\MoonSlider\Model\Item $entity */
         $slideId = $entity->getId() ?? 0;
         if ($slideId) {
-            $store = $arguments[\Tinik\MoonSlider\Model\Item::KEY_STORE_ID] ?? null;
+            $store = $arguments[ItemInterface::KEY_STORE_ID] ?? null;
 
             $details = $this->resource->lookupDetails($slideId, $store);
             if ($details) {

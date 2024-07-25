@@ -1,41 +1,48 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Slide;
 
-class Delete extends \Magento\Backend\App\Action
-{
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
+use Tinik\MoonSlider\Model\SlideRepository;
 
-    const ADMIN_RESOURCE = 'Tinik_MoonSlider::slides';
+class Delete extends Action implements HttpPostActionInterface
+{
+    public const ADMIN_RESOURCE = 'Tinik_MoonSlider::slides';
 
     /**
-     * @var \Tinik\MoonSlider\Model\SlideRepository
+     * Construct
+     *
+     * @param Context $context
+     * @param SlideRepository $objectRepository
      */
-    protected $objectRepository;
-
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Tinik\MoonSlider\Model\SlideRepository $itemRepository
-    )
-    {
+        Context $context,
+        private readonly SlideRepository $objectRepository
+    ) {
         parent::__construct($context);
-
-        $this->objectRepository = $itemRepository;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function execute()
     {
+        $resultRedirect = $this->resultFactory->create($this->resultFactory::TYPE_REDIRECT);
+
         // check if we know what should be deleted
         $id = $this->getRequest()->getParam('slide_id');
-
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
-        $resultRedirect = $this->resultRedirectFactory->create();
-
         if ($id) {
             try {
                 // delete model
                 $this->objectRepository->deleteById($id);
-                // display success message
-                $this->messageManager->addSuccessMessage(__('You have deleted the object.'));
+
+                // display a success message
+                $this->messageManager->addSuccessMessage(
+                    __('You have deleted the object.')
+                );
 
                 // go to grid
                 return $resultRedirect->setPath('*/*/');
@@ -43,17 +50,17 @@ class Delete extends \Magento\Backend\App\Action
                 // display error message
                 $this->messageManager->addErrorMessage($e->getMessage());
 
-                // go back to edit form
+                // go back to the edit form
                 return $resultRedirect->setPath('*/*/edit', ['slide_id' => $id]);
             }
         }
 
         // display error message
-        $this->messageManager->addErrorMessage(__('We can not find an object to delete.'));
+        $this->messageManager->addErrorMessage(
+            __('We can not find an object to delete.')
+        );
 
         // go to grid
         return $resultRedirect->setPath('*/*/');
-
     }
-
 }

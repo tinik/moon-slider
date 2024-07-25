@@ -1,32 +1,53 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Item;
-
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManager;
+use Tinik\MoonSlider\Model\Item;
+use Tinik\MoonSlider\Model\ResourceModel\Item as ItemResource;
 
 class Collection extends AbstractCollection
 {
+    /**
+     * @var int
+     */
+    protected int $storeId = Store::DEFAULT_STORE_ID;
 
-    protected $storeId = null;
-
-    protected function _construct()
+    /**
+     * @inheritdoc
+     */
+    protected function _construct(): void
     {
-        $this->_init('Tinik\MoonSlider\Model\Item', 'Tinik\MoonSlider\Model\ResourceModel\Item');
+        $this->_init(Item::class, ItemResource::class);
+
         $this->setFlag('assign_locale', false);
     }
 
-    public function setStoreId($value)
+    /**
+     * Assign store id for search
+     *
+     * @param int $value
+     * @return Collection
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function setStoreId(int $value): static
     {
         $this->storeId = $value;
 
         return $this->unsetLocale()->addLocale();
     }
 
-    protected function unsetLocale()
+    /**
+     * Reset locale values
+     *
+     * @return $this
+     * @throws \Zend_Db_Select_Exception
+     */
+    private function unsetLocale(): static
     {
         $select = $this->getSelect();
 
@@ -41,7 +62,12 @@ class Collection extends AbstractCollection
         return $this;
     }
 
-    public function addLocale()
+    /**
+     * Add join locale
+     *
+     * @return $this
+     */
+    public function addLocale(): static
     {
         if (true !== $this->getFlag('assign_locale')) {
             $this->joinLocale();
@@ -52,10 +78,12 @@ class Collection extends AbstractCollection
     }
 
     /**
+     * Join locale for view
      *
-     * preview version
+     * @return $this
+     * @todo: Preview version
      */
-    public function joinLocale()
+    public function joinLocale(): static
     {
         $ob = ObjectManager::getInstance();
 

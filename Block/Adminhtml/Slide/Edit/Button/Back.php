@@ -1,12 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button;
 
-
 class Back extends Generic
 {
-
-    public function getButtonData()
+    /**
+     * Get button data
+     *
+     * @return array
+     */
+    public function getButtonData(): array
     {
         $href = $this->getUrl('slides/index/index');
         return [

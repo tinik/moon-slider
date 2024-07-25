@@ -1,58 +1,56 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel;
 
-use Magento\Framework\DataObject;
 use Magento\Framework\EntityManager\EntityManager;
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Magento\Framework\Model\ResourceModel\Db\Context;
-use Tinik\MoonSlider\Model\ResourceModel\Item\Collection;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory as ItemCollectionFactory;
 
-
+/**
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.CamelCasePropertyName)
+ */
 class Slide extends AbstractDb
 {
-
-    /** @var EntityManager */
-    protected $entityManager;
-
-    /** @var MetadataPool */
-    protected $metadataPool;
-
-    /** @var ItemCollectionFactory */
-    protected $itemCollection;
-
+    /**
+     * Construct
+     *
+     * @param Context $context
+     * @param EntityManager $entityManager
+     * @param ItemCollectionFactory $itemCollection
+     * @param string $connectionName
+     */
     public function __construct(
         Context $context,
-        EntityManager $entityManager,
-        MetadataPool $metadataPool,
-        ItemCollectionFactory $itemCollection,
+        private readonly EntityManager $entityManager,
+        private readonly ItemCollectionFactory $itemCollection,
         $connectionName = null
-    )
-    {
+    ) {
         parent::__construct($context, $connectionName);
-
-        $this->entityManager = $entityManager;
-        $this->metadataPool = $metadataPool;
-        $this->itemCollection = $itemCollection;
     }
 
-    protected function _construct()
+    /**
+     * @inheritdoc
+     */
+    protected function _construct(): void
     {
         $this->_init('moon_slider_slide', 'slide_id');
     }
 
     /**
+     * Get items
      *
-     * @param string $slideId
+     * @param int $slideId
+     * @param int $storeId
      * @param array $filter
-     * @return array|DataObject[]
+     * @return array
      */
-    public function getItems(string $slideId, string $storeId, array $filter = [])
+    public function getItems(int $slideId, int $storeId, array $filter = []): array
     {
-        /** @var Collection $collection */
         $collection = $this->itemCollection->create();
         $collection->setStoreId($storeId);
         $collection->setOrder('position', $collection::SORT_ORDER_DESC);
@@ -81,7 +79,7 @@ class Slide extends AbstractDb
     }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function delete(AbstractModel $object)
     {
@@ -89,30 +87,47 @@ class Slide extends AbstractDb
         return $this;
     }
 
+    /**
+     * Load by field
+     *
+     * @param AbstractModel $object
+     * @param mixed $value
+     * @param string|null $field
+     * @return Slide
+     */
     public function load(AbstractModel $object, $value, $field = null)
     {
         $storeId = $object->getStoreId();
 
         $result = parent::load($object, $value, $field);
-        $this->entityManager->load($object, $value, [
-            \Tinik\MoonSlider\Model\Slide::KEY_STORE_ID => $storeId,
-        ]);
+        $this->entityManager->load(
+            $object,
+            $value,
+            [SlideInterface::KEY_STORE_ID => $storeId]
+        );
 
         return $result;
     }
 
-    public function lookupDetails($slideId, $storeId = null)
+    /**
+     * Get store details
+     *
+     * @param int $slideId
+     * @param int|null $storeId
+     * @return array
+     */
+    public function lookupDetails(int $slideId, int $storeId = null): array
     {
         $connection = $this->getConnection();
 
         $select = $connection->select();
-        $select->from(['main_table' => 'moon_slider_slide_store']);
+        $select->from(['main_table' => $connection->getTableName('moon_slider_slide_store')]);
         $select->where('slide_id = ?', $slideId);
-        $select->limit(1);
         if (!empty($storeId)) {
             $select->where('store_id = ?', $storeId);
         }
 
+        $select->limit(1);
         return $connection->fetchRow($select);
     }
 }

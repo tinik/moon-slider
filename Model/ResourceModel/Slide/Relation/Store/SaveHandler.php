@@ -1,43 +1,29 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store;
 
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Slide;
 
-
 class SaveHandler implements ExtensionInterface
 {
-
-    protected $storeFields = [
-        SlideInterface::KEY_TITLE,
-    ];
-
-    /** @var MetadataPool */
-    protected $metadataPool;
-
-    /** @var Slide */
-    protected $resource;
-
     /**
-     * @param MetadataPool $metadataPool
+     * Construct
+     *
      * @param Slide $resource
      */
-    public function __construct(
-        MetadataPool $metadataPool,
-        Slide $resource
-    )
+    public function __construct(private readonly Slide $resource)
     {
-        $this->metadataPool = $metadataPool;
-        $this->resource = $resource;
     }
 
     /**
-     * @param object $entity
+     * Handle save store values
+     *
+     * @param SlideInterface $entity
      * @param array $arguments
-     * @return object
+     * @return SlideInterface
      */
     public function execute($entity, $arguments = [])
     {
@@ -45,24 +31,24 @@ class SaveHandler implements ExtensionInterface
 
         $table = $this->resource->getTable('moon_slider_slide_store');
         $data = [
-            'slide_id' => (int)$entity->getId(),
-            'store_id' => (int)$entity->getStoreId(),
-            'title' => $entity->getTitle(),
+            'slide_id' => $entity->getId(),
+            'store_id' => $entity->getStoreId(),
+            'title' => $entity->getTitle()
         ];
 
-        $select = $connection->select()->from(['t' => $table])
-            ->where('t.slide_id = ?', $data['slide_id'])
-            ->where('t.store_id = ?', $data['store_id'])
+        $select = $connection->select()
+            ->from(['main_table' => $table])
+            ->where('slide_id = ?', $data['slide_id'])
+            ->where('store_id = ?', $data['store_id'])
             ->limit(1);
 
         $rowSet = $connection->fetchAssoc($select);
         if (!empty($rowSet)) {
-            $connection->update($table, [
-                'title' => $data['title'],
-            ], [
-                'slide_id = ?' => $data['slide_id'],
-                'store_id = ?' => $data['store_id'],
-            ]);
+            $connection->update(
+                $table,
+                ['title' => $data['title']],
+                ['slide_id = ?' => $data['slide_id'], 'store_id = ?' => $data['store_id']]
+            );
         } else {
             $connection->insert($table, $data);
         }

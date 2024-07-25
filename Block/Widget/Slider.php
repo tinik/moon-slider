@@ -1,53 +1,67 @@
 <?php
+declare(strict_types = 1);
 
 namespace Tinik\MoonSlider\Block\Widget;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\RuntimeException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Widget\Block\BlockInterface;
 use Psr\Log\LoggerInterface;
+use Tinik\MoonSlider\Api\Data\ItemInterface;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Api\SlideRepositoryInterface;
 use Tinik\MoonSlider\Helper\ImageUploader;
 
-
+/**
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings(PHPMD.CamelCasePropertyName)
+ */
 class Slider extends Template implements BlockInterface
 {
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var SlideRepositoryInterface */
-    private $slideRepository;
-
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $_template = 'Tinik_MoonSlider::moon-slider/widget/default.phtml';
 
-    /** @var ImageUploader */
-    private $imageUploader;
-
+    /**
+     * Construct
+     *
+     * @param Context $context
+     * @param LoggerInterface $logger
+     * @param SlideRepositoryInterface $slideRepository
+     * @param ImageUploader $imageUploader
+     * @param array $data
+     */
     public function __construct(
         Context $context,
-        LoggerInterface $logger,
-        SlideRepositoryInterface $slideRepository,
-        ImageUploader $imageUploader,
+        private readonly LoggerInterface $logger,
+        private readonly SlideRepositoryInterface $slideRepository,
+        private readonly ImageUploader $imageUploader,
         array $data = []
     ) {
         parent::__construct($context, $data);
-
-        $this->logger = $logger;
-        $this->slideRepository = $slideRepository;
-        $this->imageUploader = $imageUploader;
     }
 
-    protected function _beforeToHtml()
+    /**
+     * Before rendering html
+     *
+     * @return void
+     */
+    protected function _beforeToHtml(): void
     {
         parent::_beforeToHtml();
 
         $this->prepareData();
     }
 
-    protected function prepareData()
+    /**
+     * Prepare data
+     *
+     * @return void
+     */
+    protected function prepareData(): void
     {
         try {
             $keyword = $this->getData('keyword');
@@ -59,43 +73,51 @@ class Slider extends Template implements BlockInterface
 
             $store = $this->_storeManager->getStore();
 
-            /** @var \Tinik\MoonSlider\Model\Slide $entity */
-            $entity = $this->slideRepository->getByKeyword($keyword, $store->getId());
-            if ($entity->getIsActive() != \Tinik\MoonSlider\Model\Slide::STATUS_ENABLED) {
+            $entity = $this->slideRepository->getByKeyword($keyword, (int)$store->getId());
+            if ($entity->getIsActive() != SlideInterface::STATUS_ENABLED) {
                 throw new RuntimeException(
                     __('Slider %1 - is not active', $keyword)
                 );
             }
 
-            if ($entity) {
-                $this->assign('entity', $entity);
+            $this->assign('entity', $entity);
 
-                $exists = [];
-                foreach ($entity->getItems() as $item) {
-                    if ($item->getIsActive() != \Tinik\MoonSlider\Model\Item::STATUS_ENABLED) {
-                        continue;
-                    }
-
-                    /** @var \Tinik\MoonSlider\Model\Item $item */
-                    $image = $item->getImage();
-                    if ($image && $this->imageUploader->isExist($image)) {
-                        $exists[] = $item;
-                    } else {
-                        // write to logger information about not found image/file
-                        $this->logger->warning("MoonSlider - Not found image path $image");
-                    }
+            $exists = [];
+            foreach ($entity->getItems() as $item) {
+                if ($item->getIsActive() != ItemInterface::STATUS_ENABLED) {
+                    continue;
                 }
 
-                $this->assign('slides', $exists);
+                $image = $item->getImage();
+
+//                var_dump($image);
+//                exit;
+
+                if ($image && $this->imageUploader->isExist($image)) {
+                    $exists[] = $item;
+                } else {
+                    // write to logger information about not found image/file
+                    $this->logger->warning('MoonSlider - Not found image path $image');
+                }
             }
+
+            $this->assign('slides', $exists);
         } catch (\Exception $e) {
-            // write to logger exception message
-            $this->logger->error("MoonSlider - ". $e->getMessage());
+            // write to the logger exception message
+            $this->logger->error('MoonSlider - '. $e->getMessage());
             $this->logger->debug($e->getTraceAsString());
         }
     }
 
-    public function getImage($item, $type = 'image')
+    /**
+     * Get image uri
+     *
+     * @param ItemInterface $item
+     * @param string $type
+     * @return string
+     * @throws NoSuchEntityException
+     */
+    public function getImage(ItemInterface $item, string $type = 'image'): string
     {
         if ($type === 'mobile' && $item->getMobile()) {
             return $this->imageUploader->getUri($item->getMobile());
@@ -104,7 +126,12 @@ class Slider extends Template implements BlockInterface
         return $this->imageUploader->getUri($item->getImage());
     }
 
-    public function getMageSetting()
+    /**
+     * Get setting
+     *
+     * @return array
+     */
+    public function getMageSetting(): array
     {
         $entity = $this->_viewVars['entity'];
         $params = [

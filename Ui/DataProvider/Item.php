@@ -1,36 +1,27 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\DataProvider;
 
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\UrlInterface;
+use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Ui\DataProvider\AbstractDataProvider;
+use Tinik\MoonSlider\Api\Data\ItemInterface;
 use Tinik\MoonSlider\Helper\ImageUploader;
+use Tinik\MoonSlider\Model\ResourceModel\Item\Collection;
 use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory;
 
-
-class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
+class Item extends AbstractDataProvider
 {
-
-    /** @var string */
-    protected $baseUrl;
-
-    protected $collection;
-
-    /** @var DataPersistorInterface */
-    protected $dataPersistor;
-
-    /** @var array */
-    protected $loadedData;
-
-    /** @var RequestInterface */
-    protected $request;
-
-    /** @var ImageUploader */
-    protected $uploader;
+    /**
+     * @var array
+     */
+    private array $loadedData = [];
 
     /**
-     * DataProvider constructor.
+     * Constructor
      *
      * @param string $name
      * @param string $primaryFieldName
@@ -47,25 +38,23 @@ class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
         $primaryFieldName,
         $requestFieldName,
         CollectionFactory $collectionFactory,
-        DataPersistorInterface $dataPersistor,
-        RequestInterface $request,
-        ImageUploader $uploader,
+        private readonly DataPersistorInterface $dataPersistor,
+        private readonly RequestInterface $request,
+        private readonly ImageUploader $uploader,
         array $meta = [],
         array $data = []
-    )
-    {
-        $this->collection = $collectionFactory->create();
-        $this->dataPersistor = $dataPersistor;
-        $this->request = $request;
-        $this->uploader = $uploader;
-        $this->baseUrl = $uploader->getBaseUrl(UrlInterface::URL_TYPE_WEB);
-
+    ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
+        $this->collection = $collectionFactory->create();
     }
 
-    private function getQueryCollection()
+    /**
+     * Get the base collection
+     *
+     * @return Collection
+     */
+    private function getQueryCollection(): Collection
     {
-        /** @var \Tinik\MoonSlider\Model\ResourceModel\Item\Collection $collection */
         $this->collection->setPageSize(1);
 
         $params = $this->request->getParams();
@@ -80,8 +69,10 @@ class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
      * Get data
      *
      * @return array
+     * @throws FileSystemException
+     * @throws NoSuchEntityException
      */
-    public function getData()
+    public function getData(): array
     {
         if (isset($this->loadedData)) {
             return $this->loadedData;
@@ -104,7 +95,15 @@ class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
         return $this->loadedData;
     }
 
-    private function setItemData($item)
+    /**
+     * Set item data
+     *
+     * @param ItemInterface $item
+     * @return void
+     * @throws FileSystemException
+     * @throws NoSuchEntityException
+     */
+    private function setItemData(ItemInterface $item): void
     {
         $itemId = $item->getId();
         if (empty($this->loadedData[$itemId])) {
@@ -113,9 +112,17 @@ class Item extends \Magento\Ui\DataProvider\AbstractDataProvider
         }
     }
 
-    private function prepareValues(array $values)
+    /**
+     * Prepare values
+     *
+     * @param array $values
+     * @return array
+     * @throws FileSystemException
+     * @throws NoSuchEntityException
+     */
+    private function prepareValues(array $values): array
     {
-        foreach(['image', 'mobile'] as $key) {
+        foreach (['image', 'mobile'] as $key) {
             $info = [];
             if (!empty($values[$key])) {
                 $details = $this->uploader->getDetails($values[$key], true);

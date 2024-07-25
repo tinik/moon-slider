@@ -1,22 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\DataProvider\Modifier\Slide\Form;
 
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
 
-
 class Slide implements ModifierInterface
 {
-
-    public function modifyMeta(array $meta)
+    /**
+     * @inheritdoc
+     */
+    public function modifyMeta(array $meta): array
     {
         return $meta;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function modifyData(array $data)
+    public function modifyData(array $data): array
     {
         return $data;
     }

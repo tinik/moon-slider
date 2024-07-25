@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
 use Magento\Framework\Api\SortOrder;
 use Magento\Framework\Exception\CouldNotDeleteException;
@@ -13,37 +15,42 @@ use Tinik\MoonSlider\Api\ItemRepositoryInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Item as ObjectResourceModel;
 use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory;
 
-
 class ItemRepository implements ItemRepositoryInterface
 {
-
-    protected $objectFactory;
-
-    protected $objectResourceModel;
-
-    protected $collectionFactory;
-
-    protected $searchResultsFactory;
-
+    /**
+     * Construct
+     *
+     * @param ItemFactory $objectFactory
+     * @param ObjectResourceModel $objectResourceModel
+     * @param CollectionFactory $collectionFactory
+     * @param SearchResultsInterfaceFactory $searchResultsFactory
+     */
     public function __construct(
-        ItemFactory $objectFactory,
-        ObjectResourceModel $objectResourceModel,
-        CollectionFactory $collectionFactory,
-        SearchResultsInterfaceFactory $searchResultsFactory
-    )
-    {
-        $this->objectFactory = $objectFactory;
-        $this->objectResourceModel = $objectResourceModel;
-        $this->collectionFactory = $collectionFactory;
-        $this->searchResultsFactory = $searchResultsFactory;
+        private readonly ItemFactory $objectFactory,
+        private readonly ObjectResourceModel $objectResourceModel,
+        private readonly CollectionFactory $collectionFactory,
+        private readonly SearchResultsInterfaceFactory $searchResultsFactory
+    ) {
     }
 
-    public function createObject()
+    /**
+     * Get the empty object
+     *
+     * @return ItemInterface
+     */
+    public function createObject(): ItemInterface
     {
         return $this->objectFactory->create();
     }
 
-    public function save(ItemInterface $object)
+    /**
+     * Save object
+     *
+     * @param ItemInterface $object
+     * @return ItemInterface
+     * @throws CouldNotSaveException
+     */
+    public function save(ItemInterface $object): ItemInterface
     {
         try {
             $this->objectResourceModel->save($object);
@@ -54,43 +61,67 @@ class ItemRepository implements ItemRepositoryInterface
         return $object;
     }
 
-    public function deleteById($id)
+    /**
+     * Delete by id
+     *
+     * @param int $value
+     * @return bool
+     * @throws CouldNotDeleteException
+     * @throws NoSuchEntityException
+     */
+    public function deleteById(int $value): bool
     {
-        return $this->delete($this->getById($id));
+        return $this->delete($this->getById($value));
     }
 
-    public function delete(ItemInterface $object)
+    /**
+     * Delete by object
+     *
+     * @param ItemInterface $object
+     * @return true
+     * @throws CouldNotDeleteException
+     */
+    public function delete(ItemInterface $object): bool
     {
         try {
             $this->objectResourceModel->delete($object);
         } catch (\Exception $exception) {
-            throw new CouldNotDeleteException(__($exception->getMessage()));
+            throw new CouldNotDeleteException(
+                __($exception->getMessage())
+            );
         }
 
         return true;
     }
 
-    public function getById($value, $storeId = null)
+    /**
+     * Get item object
+     *
+     * @param int $value
+     * @return ItemInterface
+     * @throws NoSuchEntityException
+     */
+    public function getById(int $value): ItemInterface
     {
         $object = $this->objectFactory->create();
-        $object->setStoreId($storeId);
-
         $this->objectResourceModel->load($object, $value, ItemInterface::ITEM_ID);
         if (!$object->getId()) {
-            throw new NoSuchEntityException(__('Object with id "%1" does not exist.', $value));
+            throw new NoSuchEntityException(
+                __('Object with id "%1" does not exist.', $value)
+            );
         }
 
         return $object;
     }
 
     /**
+     * Get search list items
      *
      * @param SearchCriteriaInterface $criteria
-     * @return \Magento\Framework\Api\SearchResultsInterface
+     * @return SearchResultsInterface
      */
-    public function getList(SearchCriteriaInterface $criteria)
+    public function getList(SearchCriteriaInterface $criteria): SearchResultsInterface
     {
-        /** @var \Magento\Framework\Api\SearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($criteria);
 

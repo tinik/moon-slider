@@ -1,49 +1,41 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Slide\Relation\Store;
 
 use Exception;
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilderFactory;
 use Psr\Log\LoggerInterface;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Model\ItemRepository;
-use Tinik\MoonSlider\Model\Slide;
-
 
 class DeleteHandler
 {
-
-    /** @var ItemRepository */
-    private $repository;
-
-    /** @var SearchCriteriaBuilderFactory */
-    private $searchBuilderFactory;
-
-    /** @var LoggerInterface */
-    private $logger;
-
+    /**
+     * Construct
+     *
+     * @param ItemRepository $repository
+     * @param SearchCriteriaBuilderFactory $searchBuilderFactory
+     * @param LoggerInterface $logger
+     */
     public function __construct(
-        ItemRepository $repository,
-        SearchCriteriaBuilderFactory $searchBuilderFactory,
-        LoggerInterface $logger
-    )
-    {
-        $this->repository = $repository;
-        $this->searchBuilderFactory = $searchBuilderFactory;
-        $this->logger = $logger;
+        private readonly ItemRepository $repository,
+        private readonly SearchCriteriaBuilderFactory $searchBuilderFactory,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     /**
+     * Handle entity
      *
      * @param object $entity
      * @param array $arguments
-     * @return object
+     * @return SlideInterface
      */
-    public function execute($entity, $arguments = [])
+    public function execute($entity, array $arguments = []): SlideInterface
     {
-        /** @var Slide $entity */
+        /** @var SlideInterface $entity */
         if ($entity->getId()) {
-            /** @var SearchCriteriaBuilder $searchBuilder */
             $searchBuilder = $this->searchBuilderFactory->create();
             $searchBuilder->addFilter('slide_id', $entity->getId());
 

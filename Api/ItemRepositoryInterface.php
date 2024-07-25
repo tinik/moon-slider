@@ -1,20 +1,46 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Api;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\SearchResultsInterface;
 use Tinik\MoonSlider\Api\Data\ItemInterface;
-
 
 interface ItemRepositoryInterface
 {
-    public function save(ItemInterface $page);
+    /**
+     *
+     *
+     * @param ItemInterface $page
+     * @return ItemInterface
+     */
+    public function save(ItemInterface $object): ItemInterface;
 
-    public function getById($value);
+    /**
+     * @param int $value
+     * @return ItemInterface
+     */
+    public function getById(int $value): ItemInterface;
 
-    public function getList(SearchCriteriaInterface $criteria);
+    /**
+     *
+     *
+     * @param SearchCriteriaInterface $criteria
+     * @return SearchResultsInterface
+     */
+    public function getList(SearchCriteriaInterface $criteria): SearchResultsInterface;
 
-    public function delete(ItemInterface $page);
+    /**
+     *
+     * @param ItemInterface $page
+     * @return bool
+     */
+    public function delete(ItemInterface $object): bool;
 
-    public function deleteById($id);
+    /**
+     * @param int $value
+     * @return bool
+     */
+    public function deleteById(int $value): bool;
 }

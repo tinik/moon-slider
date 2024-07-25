@@ -1,35 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\DataProvider;
 
 use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Ui\DataProvider\AbstractDataProvider;
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
 use Magento\Ui\DataProvider\Modifier\PoolInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Slide\CollectionFactory;
 
-
-class Slide extends \Magento\Ui\DataProvider\AbstractDataProvider
+class Slide extends AbstractDataProvider
 {
-
-    /** @var DataPersistorInterface */
-    protected $persister;
-
-    /** @var RequestInterface */
-    private $request;
-
-    /** @var array */
-    protected $loadedData = [];
-
-    /** @var PoolInterface */
-    private $pool;
-
     /**
+     * Construct
      *
      * @param string $name
      * @param string $primaryFieldName
      * @param string $requestFieldName
-     * @param Collection $collection
-     * @param DataPersistorInterface $dataPersistor
+     * @param CollectionFactory $collectionFactory
+     * @param RequestInterface $request
+     * @param PoolInterface $pool
      * @param array $meta
      * @param array $data
      */
@@ -38,22 +29,21 @@ class Slide extends \Magento\Ui\DataProvider\AbstractDataProvider
         $primaryFieldName,
         $requestFieldName,
         CollectionFactory $collectionFactory,
-        \Magento\Framework\App\Request\DataPersistorInterface $persister,
-        \Magento\Framework\App\RequestInterface $request,
-        PoolInterface $pool,
+        private readonly RequestInterface $request,
+        private readonly PoolInterface $pool,
         array $meta = [],
         array $data = []
-    )
-    {
-        $this->collection = $collectionFactory->create();
-        $this->persister = $persister;
-        $this->request = $request;
-        $this->pool = $pool;
-
+    ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
+        $this->collection = $collectionFactory->create();
     }
 
-    private function setQueryCollection()
+    /**
+     * Get the base collection
+     *
+     * @return void
+     */
+    private function setQueryCollection(): void
     {
         $this->collection->setPageSize(1);
 
@@ -63,7 +53,13 @@ class Slide extends \Magento\Ui\DataProvider\AbstractDataProvider
         }
     }
 
-    public function getData()
+    /**
+     * Get data
+     *
+     * @return array
+     * @throws LocalizedException
+     */
+    public function getData(): array
     {
         $this->setQueryCollection();
 
@@ -75,9 +71,16 @@ class Slide extends \Magento\Ui\DataProvider\AbstractDataProvider
         return $this->data;
     }
 
-    public function getMeta()
+    /**
+     * Get meta
+     *
+     * @return array
+     * @throws LocalizedException
+     */
+    public function getMeta(): array
     {
         $meta = parent::getMeta();
+
         /** @var ModifierInterface $modifier */
         foreach ($this->pool->getModifiersInstances() as $modifier) {
             $meta = $modifier->modifyMeta($meta);

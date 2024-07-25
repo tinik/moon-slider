@@ -1,57 +1,48 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store;
 
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilderFactory;
 use Psr\Log\LoggerInterface;
-use Tinik\MoonSlider\Model\Item;
+use Tinik\MoonSlider\Api\Data\ItemInterface;
 use Tinik\MoonSlider\Model\ItemRepository;
-
 
 class DeleteHandler
 {
-
-    /** @var ItemRepository */
-    private $repository;
-
-    /** @var SearchCriteriaBuilderFactory */
-    private $searchBuilderFactory;
-
-    /** @var LoggerInterface */
-    private $logger;
-
+    /**
+     * Construct
+     *
+     * @param ItemRepository $repository
+     * @param SearchCriteriaBuilderFactory $searchBuilderFactory
+     * @param LoggerInterface $logger
+     */
     public function __construct(
-        ItemRepository $repository,
-        SearchCriteriaBuilderFactory $searchBuilderFactory,
-        LoggerInterface $logger
-    )
-    {
-        $this->repository = $repository;
-        $this->searchBuilderFactory = $searchBuilderFactory;
-        $this->logger = $logger;
+        private readonly ItemRepository $repository,
+        private readonly SearchCriteriaBuilderFactory $searchBuilderFactory,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     /**
+     * Handle delete
      *
-     * @param object $entity
+     * @param ItemInterface $entity
      * @param array $arguments
-     * @return object
+     * @return ItemInterface
      */
-    public function execute($entity, $arguments = [])
+    public function execute(ItemInterface $entity, array $arguments = []): ItemInterface
     {
-        /** @var Item $entity */
         if ($entity->getId()) {
-            /** @var SearchCriteriaBuilder $searchBuilder */
             $searchBuilder = $this->searchBuilderFactory->create();
-            $searchBuilder->addFilter(Item::ITEM_ID, $entity->getId());
+            $searchBuilder->addFilter(ItemInterface::ITEM_ID, $entity->getId());
 
             $results = $this->repository->getList($searchBuilder->create());
             if ($results->getTotalCount()) {
                 foreach ($results as $row) {
                     try {
                         $this->repository->delete($row);
-                    } catch (Exception $err) {
+                    } catch (\Exception $err) {
                         $this->logger->error($err);
                     }
                 }

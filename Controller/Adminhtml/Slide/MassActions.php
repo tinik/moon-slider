@@ -1,63 +1,52 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Slide;
 
+use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Ui\Component\MassAction\Filter;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Slide\Collection;
 use Tinik\MoonSlider\Model\ResourceModel\Slide\CollectionFactory;
-use Tinik\MoonSlider\Model\SlideRepository;
 
-
-class MassActions extends \Magento\Backend\App\Action
+class MassActions extends Action
 {
-
-    const ADMIN_RESOURCE = 'Tinik_MoonSlider::slides';
-
-    /** @var Filter */
-    private $filter;
-
-    /** @var CollectionFactory */
-    private $collectionFactory;
+    public const ADMIN_RESOURCE = 'Tinik_MoonSlider::slides';
 
     /**
+     * Construct
      *
      * @param Context $context
-     * @param SlideRepository $slideRepository
+     * @param CollectionFactory $collectionFactory
      * @param Filter $filter
      */
     public function __construct(
         Context $context,
-        CollectionFactory $collectionFactory,
-        Filter $filter
+        private readonly CollectionFactory $collectionFactory,
+        private readonly Filter $filter
     ) {
         parent::__construct($context);
-
-        $this->collectionFactory = $collectionFactory;
-        $this->filter = $filter;
     }
 
-    protected function getAction()
-    {
-        return $this->getRequest()->getParam('action');
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function execute()
     {
         /** @var Collection $collection */
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         if ($collection->getSize() > 0) {
-            $action = $this->getAction();
+            $action = $this->getRequest()->getParam('action');
 
             if ($action == 'delete') {
                 return $this->deleteBy($collection);
-            }
-            else if ($action == 'disable') {
+            } elseif ($action == 'disable') {
                 return $this->disableBy($collection);
-            }
-            else if ($action == 'enable') {
+            } elseif ($action == 'enable') {
                 return $this->enableBy($collection);
             }
         }
@@ -65,10 +54,16 @@ class MassActions extends \Magento\Backend\App\Action
         return $this->createResponse();
     }
 
-    protected function createResponse($message = null)
+    /**
+     * Create response redirect
+     *
+     * @param string|null $message
+     * @return ResultInterface
+     */
+    protected function createResponse(string $message = null): ResultInterface
     {
-        if ($message && is_string($message)) {
-            // display success message
+        if ($message) {
+            // display the success message
             $this->messageManager->addSuccessMessage(
                 __($message)
             );
@@ -79,7 +74,13 @@ class MassActions extends \Magento\Backend\App\Action
         return $resultRedirect->setPath('*/*/');
     }
 
-    private function deleteBy(Collection $collection)
+    /**
+     * Delete use collection
+     *
+     * @param Collection $collection
+     * @return ResultInterface
+     */
+    private function deleteBy(Collection $collection): ResultInterface
     {
         foreach ($collection as $row) {
             $row->delete();
@@ -88,20 +89,32 @@ class MassActions extends \Magento\Backend\App\Action
         return $this->createResponse('Slides was deleted');
     }
 
-    private function disableBy(Collection $collection)
+    /**
+     * Disable use collection
+     *
+     * @param Collection $collection
+     * @return ResultInterface
+     */
+    private function disableBy(Collection $collection): ResultInterface
     {
         foreach ($collection as $item) {
-            $item->setIsActive(0);
+            $item->setIsActive(SlideInterface::STATUS_DISABLED);
             $item->save();
         }
 
         return $this->createResponse('Slides was disabled');
     }
 
-    private function enableBy(Collection $collection)
+    /**
+     * Activate the use collection
+     *
+     * @param Collection $collection
+     * @return ResultInterface
+     */
+    private function enableBy(Collection $collection): ResultInterface
     {
         foreach ($collection as $item) {
-            $item->setIsActive(1);
+            $item->setIsActive(SlideInterface::STATUS_ENABLED);
             $item->save();
         }
 

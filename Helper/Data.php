@@ -1,29 +1,39 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Helper;
 
-
 use Magento\Framework\Registry;
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 
 class Data
 {
-
-    /** @var Registry */
-    private $registry;
-
-    public function __construct(Registry $registry)
+    /**
+     * Construct
+     *
+     * @param Registry $registry
+     */
+    public function __construct(private readonly Registry $registry)
     {
-        $this->registry = $registry;
     }
 
-
-    public function getCurrentSlider()
+    /**
+     * Get current slider
+     *
+     * @return SlideInterface|null
+     */
+    public function getCurrentSlider(): ?SlideInterface
     {
         return $this->registry->registry('current_slider');
     }
 
-    public function setCurrentSlider($slide)
+    /**
+     * Assign current slider
+     *
+     * @param SlideInterface $slide
+     * @return void
+     */
+    public function setCurrentSlider(SlideInterface $slide): void
     {
         $this->registry->register('slider', $slide);
         $this->registry->register('current_slider', $slide);

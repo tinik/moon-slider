@@ -1,15 +1,27 @@
 <?php
+declare(strict_types = 1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide;
 
+use Magento\Backend\Block\Widget;
 
-class AssignItems extends \Magento\Backend\Block\Widget
+/**
+ * @SuppressWarnings(PHPMD.CamelCasePropertyName)
+ */
+class AssignItems extends Widget
 {
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $_template = 'Tinik_MoonSlider::slider/edit/assign_items.phtml';
 
-    public function getBlockGrid()
+    /**
+     * Get block grid
+     *
+     * @return void
+     */
+    public function getBlockGrid(): void
     {
 //        static $blockGrid;
 //        if (!$blockGrid) {

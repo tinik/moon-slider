@@ -1,30 +1,36 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model;
 
 use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\AbstractModel;
+use Magento\Store\Model\Store;
 use Tinik\MoonSlider\Api\Data\SlideInterface;
-
 
 class Slide extends AbstractModel implements SlideInterface, IdentityInterface
 {
 
-    const ENTITY = 'moon_slider_slide';
+    public const ENTITY = 'moon_slider_slide';
 
-    const CACHE_TAG = 'moon_slider_slide';
-
-    const STATUS_ENABLED = 1;
-    const STATUS_DISABLED = 0;
-
+    public const CACHE_TAG = 'moon_slider_slide';
 
     /**
      *
      * @return string[]
      */
-    public function getIdentities()
+    public function getIdentities(): array
     {
         return [self::CACHE_TAG . '_' . $this->getId()];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function _construct(): void
+    {
+        $this->_init(ResourceModel\Slide::class);
     }
 
     /**
@@ -32,47 +38,101 @@ class Slide extends AbstractModel implements SlideInterface, IdentityInterface
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
-        return parent::getData(self::SLIDE_ID);
+        return (int)$this->getData(self::SLIDE_ID);
     }
 
-    protected function _construct()
+    /**
+     * Get StoreId
+     *
+     * @return int
+     */
+    public function getStoreId(): int
     {
-        $this->_init('Tinik\MoonSlider\Model\ResourceModel\Slide');
+        return (int)$this->getData(self::KEY_STORE_ID, Store::DEFAULT_STORE_ID);
     }
 
-    public function getStoreId()
-    {
-        return $this->getData(self::KEY_STORE_ID);
-    }
-
-    public function setStoreId($value)
+    /**
+     * Assign StoreId value
+     *
+     * @param int $value
+     * @return Slide
+     */
+    public function setStoreId(int $value = Store::DEFAULT_STORE_ID): Slide
     {
         return $this->setData(self::KEY_STORE_ID, $value);
     }
 
-    public function getTitle()
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle(): string
     {
         return $this->getData(self::KEY_TITLE);
     }
 
-    public function setTitle($value)
+    /**
+     * Assign title value
+     *
+     * @param string $value
+     * @return Slide
+     */
+    public function setTitle(string $value): Slide
     {
         return $this->setData(self::KEY_TITLE, trim($value));
     }
 
-    public function getKeyword()
+    /**
+     * Get keyword value
+     *
+     * @return string
+     */
+    public function getKeyword(): string
     {
-        return $this->getData(self::KEY_KEYWORD);
+        return (string)$this->getData(self::KEY_KEYWORD);
     }
 
-    public function setKeyword($value)
+    /**
+     * Assign keyword value
+     *
+     * @param string $value
+     * @return Slide
+     */
+    public function setKeyword(string $value): Slide
     {
         return $this->setData(self::KEY_KEYWORD, trim($value));
     }
 
-    public function getAvailableStatuses()
+    /**
+     * Assign is-active value
+     *
+     * @param int $value
+     * @return Slide
+     */
+    public function setIsActive(int $value): Slide
+    {
+        return $this->setData(self::KEY_IS_ACTIVE, $value);
+    }
+
+    /**
+     * Get is-active value
+     *
+     * @return int
+     */
+    public function getIsActive(): int
+    {
+        return (int)$this->getData(self::KEY_IS_ACTIVE);
+    }
+
+    /**
+     * Get list available statuses
+     *
+     * @return array
+     */
+    public function getAvailableStatuses(): array
     {
         return [
             self::STATUS_ENABLED  => __('Enabled'),
@@ -80,6 +140,11 @@ class Slide extends AbstractModel implements SlideInterface, IdentityInterface
         ];
     }
 
+    /**
+     * @param array $filter
+     * @return mixed
+     * @throws LocalizedException
+     */
     public function getItems(array $filter = [])
     {
         $slideId = $this->getId();

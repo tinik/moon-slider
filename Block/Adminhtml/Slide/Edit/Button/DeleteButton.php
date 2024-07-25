@@ -1,21 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button;
 
-
 class DeleteButton extends Generic
 {
-
-    public function getButtonData()
+    /**
+     * @inheritdoc
+     */
+    public function getButtonData(): array
     {
         if (!$this->getSlideId()) {
             return [];
         }
 
-        $link = $this->getUrl('slides/slide/delete', [
-            'slide_id' => $this->getSlideId(),
-            'store_id' => $this->getStoreId()
-        ]);
+        $link = $this->getUrl(
+            'slides/slide/delete',
+            [
+                'slide_id' => $this->getSlideId(),
+                'store_id' => $this->getStoreId()
+            ]
+        );
 
         $message = __('Are you sure you want to do this?');
 

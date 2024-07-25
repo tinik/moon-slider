@@ -1,38 +1,33 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button;
 
 use Magento\Ui\Component\Control\Container;
 
-/**
- *
- * Class Save
- */
 class Save extends Generic
 {
-
-    /** @var string */
-    private $target = '';
-
-    protected function getTargetName()
+    /**
+     * Get target name
+     *
+     * @return string
+     */
+    protected function getTargetName(): string
     {
-        if (empty($this->target)) {
-            $this->target = 'moon_slider_slides_new.moon_slider_slides_new';
+        $target = 'moon_slider_slides_new.moon_slider_slides_new';
 
-            $slideId = $this->getSlideId();
-            if (!empty($slideId)) {
-                $this->target = 'moon_slider_slides_form.moon_slider_slides_form';
-            }
+        $slideId = $this->getSlideId();
+        if (!empty($slideId)) {
+            $target = 'moon_slider_slides_form.moon_slider_slides_form';
         }
 
-        return $this->target;
+        return $target;
     }
 
     /**
-     *
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function getButtonData()
+    public function getButtonData(): array
     {
         return [
             'label' => __('Save'),
@@ -60,7 +55,7 @@ class Save extends Generic
      *
      * @return array
      */
-    protected function getOptions()
+    protected function getOptions(): array
     {
         $storeId = $this->getStoreId();
         $target = $this->getTargetName();

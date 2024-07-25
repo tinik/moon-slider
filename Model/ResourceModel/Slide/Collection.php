@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Slide;
 
@@ -6,32 +7,48 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManager;
-
+use Tinik\MoonSlider\Model\ResourceModel\Slide as SlideResource;
+use Tinik\MoonSlider\Model\Slide;
 
 class Collection extends AbstractCollection
 {
+    /**
+     * @var int
+     */
+    private int $storeId = Store::DEFAULT_STORE_ID;
 
-    /** @var int */
-    private $storeId;
-
-    protected function _construct()
+    /**
+     * @inheritdoc
+     */
+    protected function _construct(): void
     {
-        $this->_init('Tinik\MoonSlider\Model\Slide', 'Tinik\MoonSlider\Model\ResourceModel\Slide');
+        $this->_init(Slide::class, SlideResource::class);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function _renderFiltersBefore()
     {
         $this->addLocale();
         return parent::_renderFiltersBefore();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addFieldToFilter($field, $condition = null)
     {
         $this->addLocale();
         return parent::addFieldToFilter($field, $condition);
     }
 
-    public function addLocale()
+    /**
+     * Assign locale for get data
+     *
+     * @return $this
+     */
+    public function addLocale(): static
     {
         if (true !== $this->getFlag('assign_locale')) {
             $this->joinLocale();
@@ -41,7 +58,13 @@ class Collection extends AbstractCollection
         return $this;
     }
 
-    protected function unsetLocale()
+    /**
+     * Reset locale
+     *
+     * @return $this
+     * @throws \Zend_Db_Select_Exception
+     */
+    protected function unsetLocale(): static
     {
         $select = $this->getSelect();
 
@@ -56,7 +79,14 @@ class Collection extends AbstractCollection
         return $this;
     }
 
-    public function setStoreId($value)
+    /**
+     * Set store id
+     *
+     * @param int $value
+     * @return $this
+     * @throws \Zend_Db_Select_Exception
+     */
+    public function setStoreId(int $value): static
     {
         $this->storeId = $value;
 
@@ -64,9 +94,12 @@ class Collection extends AbstractCollection
     }
 
     /**
-     * preview version
+     * Join locale for get data
+     *
+     * @return $this
+     * @todo: preview version
      */
-    public function joinLocale()
+    public function joinLocale(): static
     {
         $ob = ObjectManager::getInstance();
 

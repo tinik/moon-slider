@@ -1,25 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\Component\Listing\Column\Sliders;
 
 use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
 use Magento\Eav\Model\Entity\Attribute\Source\SourceInterface;
 use Magento\Framework\Data\OptionSourceInterface;
-
+use Tinik\MoonSlider\Api\Data\SlideInterface;
 
 class Status extends AbstractSource implements SourceInterface, OptionSourceInterface
 {
-
-    const STATUS_ENABLED = 1;
-    const STATUS_DISABLED = 2;
-
     /**
+     * Get visible options
      *
      * @return int[]
      */
-    public function getVisibleStatusIds()
+    public function getVisibleStatusIds(): array
     {
-        return [self::STATUS_ENABLED];
+        return [
+            SlideInterface::STATUS_ENABLED
+        ];
     }
 
     /**
@@ -28,23 +28,22 @@ class Status extends AbstractSource implements SourceInterface, OptionSourceInte
      * @return string[]
      * phpcs:disable Magento2.Functions.StaticFunction
      */
-    public static function getOptionArray()
+    public static function getOptionArray(): array
     {
         return [
-            self::STATUS_ENABLED => __('Enabled'),
-            self::STATUS_DISABLED => __('Disabled')
+            SlideInterface::STATUS_ENABLED => __('Enabled'),
+            SlideInterface::STATUS_DISABLED => __('Disabled')
         ];
     }
 
     /**
-     * Retrieve option array with empty value
+     * Retrieve the option array with empty value
      *
      * @return string[]
      */
-    public function getAllOptions()
+    public function getAllOptions(): array
     {
         $result = [];
-
         foreach (self::getOptionArray() as $index => $value) {
             $result[] = ['value' => $index, 'label' => $value];
         }
@@ -56,12 +55,11 @@ class Status extends AbstractSource implements SourceInterface, OptionSourceInte
      * Retrieve option text by option value
      *
      * @param string $optionId
-     * @return string
+     * @return string|null
      */
-    public function getOptionText($optionId)
+    public function getOptionText($optionId): ?string
     {
         $options = self::getOptionArray();
-
         return $options[$optionId] ?? null;
     }
 }

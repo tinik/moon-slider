@@ -1,12 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button;
 
-
 class Slide extends Generic
 {
-
-    public function getButtonData()
+    /**
+     * @inheritdoc
+     */
+    public function getButtonData(): array
     {
         return [
             'label'      => __('Manage Slides'),

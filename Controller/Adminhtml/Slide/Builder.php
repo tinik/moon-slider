@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Slide;
 
@@ -9,37 +9,30 @@ use Tinik\MoonSlider\Api\Data\SlideInterface;
 use Tinik\MoonSlider\Helper\Data as HelperData;
 use Tinik\MoonSlider\Model\SlideRepository;
 
-
 class Builder
 {
-
-    /** @var SlideRepository */
-    private $repository;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var HelperData */
-    private $helper;
-
+    /**
+     * Construct
+     *
+     * @param SlideRepository $repository
+     * @param LoggerInterface $logger
+     * @param HelperData $helper
+     */
     public function __construct(
-        SlideRepository $repository,
-        LoggerInterface $logger,
-        HelperData $helper
-    )
-    {
-        $this->repository = $repository;
-        $this->logger = $logger;
-        $this->helper = $helper;
+        private readonly SlideRepository $repository,
+        private readonly LoggerInterface $logger,
+        private readonly HelperData $helper
+    ) {
     }
 
     /**
+     * Get instance object
      *
-     * @param $slideId
-     * @param $storeId
-     * @return \Tinik\MoonSlider\Model\Slide
+     * @param int $slideId
+     * @param int $storeId
+     * @return SlideInterface
      */
-    private function getSlideObject($slideId, $storeId)
+    private function getSlideObject(int $slideId, int $storeId): SlideInterface
     {
         if ($slideId) {
             try {
@@ -54,19 +47,19 @@ class Builder
     }
 
     /**
+     * Assign details
      *
      * @param RequestInterface $request
      * @return SlideInterface
      */
-    public function build(RequestInterface $request): SlideInterface
+    public function execute(RequestInterface $request): SlideInterface
     {
         $slideId = (int)$request->getParam('slide_id');
-        $storeId = (int)$request->getParam('store', null);
+        $storeId = (int)$request->getParam('store');
 
         $slide = $this->getSlideObject($slideId, $storeId);
         $this->helper->setCurrentSlider($slide);
 
         return $slide;
     }
-
 }

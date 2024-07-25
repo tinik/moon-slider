@@ -1,34 +1,32 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\Component\Slider\Form;
 
 use Magento\Framework\Data\OptionSourceInterface;
 
-
 class Transition implements OptionSourceInterface
 {
-
-    private $options = [];
+    /**
+     * @var array
+     */
+    private array $options = [];
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function toOptionArray()
+    public function toOptionArray(): array
     {
         if (empty($this->options)) {
-            $values = [];
-            $delay  = range(100, 10000, 100);
-            foreach ($delay as $row) {
-                $values[] = [
+            $this->options = [];
+            foreach (range(100, 10000, 100) as $row) {
+                $this->options[] = [
                     'value' => $row,
                     'label' => $row . __(' miliseconds'),
                 ];
             }
-
-            $this->options = $values;
         }
 
         return $this->options;
     }
-
 }

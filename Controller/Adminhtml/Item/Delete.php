@@ -3,8 +3,8 @@
 namespace Tinik\MoonSlider\Controller\Adminhtml\Item;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Psr\Log\LoggerInterface;
 use Tinik\MoonSlider\Model\ItemRepository;
 use Tinik\MoonSlider\Model\SlideRepository;
@@ -82,12 +82,19 @@ class Delete extends AbstractAction
         }
     }
 
-    private function createResponse($result, array $values): Json
+    /**
+     * Create result response
+     *
+     * @param bool $result
+     * @param array $values
+     * @return ResultInterface
+     */
+    private function createResponse(bool $result, array $values): ResultInterface
     {
         $values['result'] = $result;
 
-        $result = $this->jsonFactory->create();
-        $result->setData($values);
-        return $result;
+        $response = $this->resultFactory->create($this->resultFactory::TYPE_JSON);
+        $response->setData($values);
+        return $response;
     }
 }

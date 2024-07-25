@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\Component\Listing\Column\Items;
 
@@ -7,17 +8,15 @@ use Magento\Eav\Model\Entity\Attribute\Source\SourceInterface;
 use Magento\Framework\Data\OptionSourceInterface;
 use Tinik\MoonSlider\Model\Item;
 
-
 class Status extends AbstractSource implements SourceInterface, OptionSourceInterface
 {
-
     /**
      * Retrieve option array
      *
      * @return string[]
      * phpcs:disable Magento2.Functions.StaticFunction
      */
-    public static function getOptionArray()
+    public static function getOptionArray(): array
     {
         return [
             Item::STATUS_ENABLED => __('Enabled'),
@@ -26,11 +25,11 @@ class Status extends AbstractSource implements SourceInterface, OptionSourceInte
     }
 
     /**
-     * Retrieve option array with empty value
+     * Retrieve the option array with empty value
      *
      * @return string[]
      */
-    public function getAllOptions()
+    public function getAllOptions(): array
     {
         $result = [];
         foreach (self::getOptionArray() as $index => $value) {
@@ -44,9 +43,9 @@ class Status extends AbstractSource implements SourceInterface, OptionSourceInte
      * Retrieve option text by option value
      *
      * @param string $optionId
-     * @return string
+     * @return string|null
      */
-    public function getOptionText($optionId)
+    public function getOptionText($optionId): ?string
     {
         $options = self::getOptionArray();
         return $options[$optionId] ?? null;

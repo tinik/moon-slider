@@ -1,14 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml;
 
+use Magento\Backend\Block\Template;
 
-class Main extends \Magento\Backend\Block\Template
+class Main extends Template
 {
-
-    protected function _prepareLayout()
-    {
-        return $this;
-    }
-
 }

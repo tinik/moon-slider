@@ -1,57 +1,141 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model;
 
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Model\AbstractModel;
 use Tinik\MoonSlider\Api\Data\ItemInterface;
-
+use Tinik\MoonSlider\Model\ResourceModel\Item as ResourceItem;
 
 class Item extends AbstractModel implements ItemInterface, IdentityInterface
 {
 
-    const ENTITY = 'moon_slider_item';
+    public const ENTITY = 'moon_slider_item';
 
-    const CACHE_TAG = 'moon_slider_item';
+    public const CACHE_TAG = 'moon_slider_item';
 
-    // Status variant
-    const STATUS_ENABLED = 1;
-    const STATUS_DISABLED = 0;
-
-    protected function _construct()
+    /**
+     * @inheritdoc
+     */
+    protected function _construct(): void
     {
-        $this->_init('Tinik\MoonSlider\Model\ResourceModel\Item');
+        $this->_init(ResourceItem::class);
     }
 
-    public function getIdentities()
+    /**
+     * @inheritdoc
+     */
+    public function getIdentities(): array
     {
         return [self::CACHE_TAG . '_' . $this->getId()];
     }
 
     /**
-     * Get ID
-     *
-     * @return int
+     * @inheritdoc
      */
-    public function getId()
+    public function getId(): int
     {
-        return parent::getData(self::ITEM_ID);
+        return (int)$this->getData(self::ITEM_ID);
     }
 
-    public function getTitle()
+    /**
+     * @inheritdoc
+     */
+    public function getSliderId(): int
     {
-        $value = $this->getData(self::KEY_TITLE);
-        return trim($value);
+        return (int)$this->getData(self::KEY_SLIDER_ID, 0);
     }
 
-    public function setSlideId($value)
+    /**
+     * @inheritdoc
+     */
+    public function setSliderId(int $value): ItemInterface
     {
         return $this->setData(self::KEY_SLIDER_ID, $value);
     }
 
-    public function getLink()
+    /**
+     * @inheritdoc
+     */
+    public function getStoreId(): int
     {
-        $value = $this->getData(self::KEY_LINK);
-        return trim($value);
+        return (int)$this->getData(self::KEY_STORE_ID);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setStoreId(int $value): ItemInterface
+    {
+        return $this->setData(self::KEY_SLIDER_ID, $value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTitle(): string
+    {
+        return (string)$this->getData(self::KEY_TITLE);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setTitle(string $value): ItemInterface
+    {
+        return $this->setData(self::KEY_TITLE, trim($value));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContent(): string
+    {
+        return (string)$this->getData(self::KEY_CONTENT);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setContent(string $value): ItemInterface
+    {
+        return $this->setData(self::KEY_CONTENT, trim($value));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLink(): string
+    {
+        return (string)$this->getData(self::KEY_LINK);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setLink(string $value): ItemInterface
+    {
+        return $this->setData(self::KEY_LINK, trim($value));
+    }
+
+    /**
+     * Get mobile image path
+     *
+     * @return string
+     */
+    public function getMobile(): string
+    {
+        return $this->getData('mobile');
+    }
+
+    /**
+     * Get desktop image path
+     *
+     * @return string
+     */
+    public function getImage(): string
+    {
+        return $this->getData('image');
     }
 }

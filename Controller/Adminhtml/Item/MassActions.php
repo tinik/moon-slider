@@ -1,27 +1,23 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Item;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Backend\Model\View\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Ui\Component\MassAction\Filter;
+use Tinik\MoonSlider\Api\Data\ItemInterface;
 use Tinik\MoonSlider\Api\SlideRepositoryInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Item\Collection;
 use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory;
 use Tinik\MoonSlider\Model\SlideRepository;
 
-
 class MassActions extends AbstractAction
 {
-
-    /** @var Filter */
-    private $filter;
-
-    /** @var CollectionFactory */
-    private $collectionFactory;
-
     /**
+     * Construct
      *
      * @param Context $context
      * @param SlideRepository $slideRepository
@@ -31,33 +27,27 @@ class MassActions extends AbstractAction
     public function __construct(
         Context $context,
         SlideRepositoryInterface $slideRepository,
-        CollectionFactory $collectionFactory,
-        Filter $filter
+        private readonly CollectionFactory $collectionFactory,
+        private readonly Filter $filter
     ) {
         parent::__construct($context, $slideRepository);
-
-        $this->collectionFactory = $collectionFactory;
-        $this->filter = $filter;
     }
 
-    protected function getAction()
-    {
-        return $this->getRequest()->getParam('action');
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function execute()
     {
         /** @var Collection $collection */
         $collection = $this->filter->getCollection($this->collectionFactory->create());
         if ($collection->getSize() > 0) {
-            $action = $this->getAction();
+            $action = $this->getRequest()->getParam('action');
+
             if ($action == 'delete') {
                 return $this->deleteBy($collection);
-            }
-            else if ($action == 'disable') {
+            } elseif ($action == 'disable') {
                 return $this->disableBy($collection);
-            }
-            else if ($action == 'enable') {
+            } elseif ($action == 'enable') {
                 return $this->enableBy($collection);
             }
         }
@@ -65,10 +55,16 @@ class MassActions extends AbstractAction
         return $this->createResponse();
     }
 
-    protected function createResponse($message = '')
+    /**
+     * Create response
+     *
+     * @param string $message
+     * @return ResultInterface
+     */
+    protected function createResponse(string $message = '')
     {
         if (!empty($message)) {
-            // display success message
+            // display the success message
             $this->messageManager->addSuccessMessage(
                 __($message)
             );
@@ -79,7 +75,13 @@ class MassActions extends AbstractAction
         return $resultRedirect->setPath('*/*/');
     }
 
-    private function deleteBy(Collection $collection)
+    /**
+     * Delete use collection
+     *
+     * @param Collection $collection
+     * @return ResultInterface
+     */
+    private function deleteBy(Collection $collection): ResultInterface
     {
         foreach ($collection as $row) {
             $row->delete();
@@ -88,20 +90,32 @@ class MassActions extends AbstractAction
         return $this->createResponse('Items was deleted');
     }
 
-    private function disableBy(Collection $collection)
+    /**
+     * Disable use collection
+     *
+     * @param Collection $collection
+     * @return ResultInterface
+     */
+    private function disableBy(Collection $collection): ResultInterface
     {
         foreach ($collection as $item) {
-            $item->setIsActive(0);
+            $item->setIsActive(ItemInterface::STATUS_DISABLED);
             $item->save();
         }
 
         return $this->createResponse('Items was disabled');
     }
 
-    private function enableBy(Collection $collection)
+    /**
+     * Enable use collection
+     *
+     * @param Collection $collection
+     * @return ResultInterface
+     */
+    private function enableBy(Collection $collection): ResultInterface
     {
         foreach ($collection as $item) {
-            $item->setIsActive(1);
+            $item->setIsActive(ItemInterface::STATUS_ENABLED);
             $item->save();
         }
 

@@ -1,33 +1,36 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Slide;
 
-class Edit extends \Magento\Backend\App\Action
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpGetActionInterface;
+use Magento\Framework\Controller\ResultInterface;
+
+class Edit extends Action implements HttpGetActionInterface
 {
+    public const ADMIN_RESOURCE = 'Tinik_MoonSlider::slides';
 
-    const ADMIN_RESOURCE = 'Tinik_MoonSlider::slides';
-
-    /** @var \Magento\Framework\View\Result\PageFactory */
-    protected $resultPageFactory;
-
-    /** @var Builder */
-    private $builder;
-
+    /**
+     * Construct
+     *
+     * @param Context $context
+     * @param Builder $builder
+     */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Tinik\MoonSlider\Controller\Adminhtml\Slide\Builder $builder
-    )
-    {
+        Context $context,
+        private readonly Builder $builder
+    ) {
         parent::__construct($context);
-
-        $this->resultPageFactory = $resultPageFactory;
-        $this->builder = $builder;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function execute()
     {
-        $this->builder->build($this->getRequest());
-        return $this->resultPageFactory->create();
+        $this->builder->execute($this->getRequest());
+        return $this->resultFactory->create($this->resultFactory::TYPE_PAGE);
     }
 }

@@ -1,43 +1,40 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Model\ResourceModel\Item\Relation\Store;
 
-use Magento\Framework\EntityManager\MetadataPool;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Tinik\MoonSlider\Api\Data\ItemInterface;
 use Tinik\MoonSlider\Model\ResourceModel\Item;
 
-
 class SaveHandler implements ExtensionInterface
 {
-
-    protected $storeFields = [
+    /**
+     * @var array
+     */
+    private array $storeFields = [
         ItemInterface::KEY_TITLE,
         ItemInterface::KEY_CONTENT,
     ];
 
-    /** @var MetadataPool */
-    protected $metadataPool;
-
-    /** @var Item */
-    protected $resource;
-
     /**
-     * @param MetadataPool $metadataPool
+     * Construct
+     *
      * @param Item $resource
      */
     public function __construct(
-        MetadataPool $metadataPool,
-        Item $resource
-    )
-    {
-        $this->metadataPool = $metadataPool;
-        $this->resource = $resource;
+        private readonly Item $resource
+    ) {
     }
 
-    public function getValues($entity)
+    /**
+     * Get store values
+     *
+     * @param ItemInterface $entity
+     * @return array
+     */
+    public function getValues(ItemInterface $entity): array
     {
-        /** @var \Tinik\MoonSlider\Model\Item $entity */
         $values = [];
         foreach ($this->storeFields as $field) {
             $values[$field] = $entity->getData($field);
@@ -47,23 +44,27 @@ class SaveHandler implements ExtensionInterface
     }
 
     /**
-     * @param object $entity
+     * Handle save items
+     *
+     * @param ItemInterface $entity
      * @param array $arguments
-     * @return object
+     * @return ItemInterface
      */
-    public function execute($entity, $arguments = [])
+    public function execute($entity, $arguments = []): ItemInterface
     {
         $connection = $this->resource->getConnection();
 
-        $table = $this->resource->getTable('moon_slider_slide_item_store');
+        $table = $connection->getTableName('moon_slider_slide_item_store');
+
         $refer = [
             ItemInterface::ITEM_ID => (int)$entity->getId(),
             ItemInterface::KEY_STORE_ID => (int)$entity->getStoreId(),
         ];
 
-        $select = $connection->select()->from(['i' => $table])
-            ->where('i.item_id = ?', $refer[ItemInterface::ITEM_ID])
-            ->where('i.store_id = ?', $refer[ItemInterface::KEY_STORE_ID])
+        $select = $connection->select()
+            ->from(['main_table' => $table])
+            ->where('item_id = ?', $refer[ItemInterface::ITEM_ID])
+            ->where('store_id = ?', $refer[ItemInterface::KEY_STORE_ID])
             ->limit(1);
 
         $values = $this->getValues($entity);

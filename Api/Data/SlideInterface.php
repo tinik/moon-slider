@@ -1,18 +1,51 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Api\Data;
 
 interface SlideInterface
 {
+    public const SLIDE_ID = 'slide_id';
+    public const KEY_TITLE = 'title';
+    public const KEY_KEYWORD = 'keyword';
+    public const KEY_STORE_ID = 'store_id';
+    public const KEY_IS_ACTIVE = 'is_active';
 
-    const SLIDE_ID      = 'slide_id';
+    public const STATUS_ENABLED = 1;
+    public const STATUS_DISABLED = 0;
 
-    const KEY_TITLE     = 'title';
+    /**
+     * Get Id
+     *
+     * @return int
+     */
+    public function getId(): int;
 
-    const KEY_KEYWORD   = 'keyword';
+    /**
+     * Get StoreId
+     *
+     * @return int
+     */
+    public function getStoreId(): int;
 
-    const KEY_STORE_ID  = 'store_id';
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle(): string;
 
-    const KEY_IS_ACTIVE = 'is_active';
+    /**
+     * Get keyword
+     *
+     * @return string
+     */
+    public function getKeyword(): string;
 
+    /**
+     * Get is-active
+     *
+     * @return int
+     */
+    public function getIsActive(): int;
 }

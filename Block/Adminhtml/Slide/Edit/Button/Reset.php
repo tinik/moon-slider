@@ -1,14 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Block\Adminhtml\Slide\Edit\Button;
 
 use Magento\Framework\View\Element\UiComponent\Control\ButtonProviderInterface;
 
-
 class Reset extends Generic implements ButtonProviderInterface
 {
-
-    public function getButtonData()
+    /**
+     * @inheritdoc
+     */
+    public function getButtonData(): array
     {
         return [
             'label'      => __('Reset'),

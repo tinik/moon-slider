@@ -1,20 +1,26 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\Component\Listing\DataProviders;
 
-
 use Magento\Framework\App\RequestInterface;
+use Magento\Ui\DataProvider\AbstractDataProvider;
+use Tinik\MoonSlider\Model\ResourceModel\Item\Collection;
 use Tinik\MoonSlider\Model\ResourceModel\Item\CollectionFactory;
 
-
-class Items extends \Magento\Ui\DataProvider\AbstractDataProvider
+class Items extends AbstractDataProvider
 {
-
     /**
-     * @var RequestInterface
+     * Construct
+     *
+     * @param string $name
+     * @param string $primaryFieldName
+     * @param string $requestFieldName
+     * @param CollectionFactory $collectionFactory
+     * @param RequestInterface $request
+     * @param array $meta
+     * @param array $data
      */
-    private $request;
-
     public function __construct(
         $name,
         $primaryFieldName,
@@ -23,23 +29,18 @@ class Items extends \Magento\Ui\DataProvider\AbstractDataProvider
         RequestInterface $request,
         array $meta = [],
         array $data = []
-    )
-    {
+    ) {
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
-        $this->request = $request;
 
-        $slideId = $this->request->getParam('slide_id');
-        $storeId = $this->request->getParam('store_id', 0);
+        $slideId = $request->getParam('slide_id');
+        $storeId = $request->getParam('store_id', 0);
 
-        /** @var \Tinik\MoonSlider\Model\ResourceModel\Item\Collection $collection */
+        /** @var Collection $collection */
         $collection = $collectionFactory->create();
         $collection->setStoreId($storeId)
             ->addOrder('position', $collection::SORT_ORDER_DESC)
-            ->addFieldToFilter('slide_id', [
-                'eq' => $slideId
-            ]);
+            ->addFieldToFilter('slide_id', ['eq' => $slideId]);
 
         $this->collection = $collection;
     }
-
 }

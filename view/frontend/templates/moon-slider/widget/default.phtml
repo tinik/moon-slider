@@ -41,6 +41,7 @@ if (($wrapClass = $entity->getWrapClass())) {
                     <li class="splide__slide">
                         <div style="<?php echo join(';', $styles); ?>" class="splide__slide__container">
                             <img
+                                alt="<?php echo $row->getTitle(); ?>"
                                 src="<?php echo $block->getImage($row); ?>"
                                 srcset="<?php echo $block->getImage($row, 'mobile'); ?>, <?php echo $block->getImage($row); ?> 2x"
                             />
@@ -50,7 +51,7 @@ if (($wrapClass = $entity->getWrapClass())) {
                                 </div>
 
                                 <?php $content = $row->getContent(); ?>
-                                <?php if($content): ?>
+                                <?php if ($content): ?>
                                     <div class="moon-slider__slide_content">
                                         <?php echo $content; ?>
                                     </div>

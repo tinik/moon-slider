@@ -43,11 +43,12 @@ class Items extends \Magento\Backend\Block\Widget\Grid\Extended
         Visibility $visibility = null,
         Status $status = null
     ) {
+        parent::__construct($context, $backendHelper, $data);
+
         $this->_productFactory = $productFactory;
         $this->_coreRegistry = $coreRegistry;
         $this->visibility = $visibility ?: ObjectManager::getInstance()->get(Visibility::class);
         $this->status = $status ?: ObjectManager::getInstance()->get(Status::class);
-        parent::__construct($context, $backendHelper, $data);
     }
 
     /**

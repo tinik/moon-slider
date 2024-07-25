@@ -5,7 +5,6 @@ $blockId = $block->getId();
 /** @var \Magento\Framework\Json\Helper\Data $helper */
 $helper = $this->helper('Magento\Framework\Json\Helper\Data');
 ?>
-
 <div>
     <div class="slider-actions">
         <button class="action-basic" type="button" data-mage-init='{"Tinik_MoonSlider/js/manage": {}'>
@@ -13,9 +12,9 @@ $helper = $this->helper('Magento\Framework\Json\Helper\Data');
         </button>
     </div>
 </div>
-
-<?php echo $block->getBlockGrid(); ?>
-
+<?php
+    echo $block->getBlockGrid();
+?>
 <!--
 <script type="text/javascript">
     require('mage/apply/main').apply();

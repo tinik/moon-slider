@@ -1,30 +1,35 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Ui\DataProvider\Modifier\Slide\Form;
 
 use Magento\Ui\DataProvider\Modifier\ModifierInterface;
-
+use Tinik\MoonSlider\Helper\Data;
 
 class General implements ModifierInterface
 {
-
-    /** @var \Tinik\MoonSlider\Helper\Data */
-    private $helper;
-
-    public function __construct(\Tinik\MoonSlider\Helper\Data $helper)
-    {
-        $this->helper = $helper;
+    /**
+     * Construct
+     *
+     * @param Data $helper
+     */
+    public function __construct(
+        private readonly Data $helper
+    ) {
     }
 
-    public function modifyMeta(array $meta)
+    /**
+     * @inheritdoc
+     */
+    public function modifyMeta(array $meta): array
     {
         return $meta;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function modifyData(array $data)
+    public function modifyData(array $data): array
     {
         $slider = $this->helper->getCurrentSlider();
         if (!empty($slider)) {

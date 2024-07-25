@@ -1,41 +1,37 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Item;
 
 use Magento\Backend\App\Action;
-use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\Exception\RuntimeException;
 use Tinik\MoonSlider\Helper\ImageUploader;
 
-
 class Upload extends Action
 {
+    public const ADMIN_RESOURCE = 'Tinik_MoonSlider::items';
 
-    const ADMIN_RESOURCE = 'Tinik_MoonSlider::items';
-
-    /** @var ImageUploader */
-    protected $uploader;
-
-    public function __construct(
-        Action\Context $context,
-        ImageUploader $imageUploader,
-        JsonFactory $resultFactory
-    )
+    /**
+     * Construct
+     *
+     * @param Context $context
+     * @param ImageUploader $uploader
+     */
+    public function __construct(Context $context, private readonly ImageUploader $uploader)
     {
         parent::__construct($context);
-
-        $this->resultFactory = $resultFactory;
-        $this->uploader = $imageUploader;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function execute()
     {
         try {
             $name = $this->getRequest()->getParam('param_name');
             if (!$name) {
-                throw new RuntimeException(
-                    __('Not found params name')
-                );
+                throw new RuntimeException(__('Not found params name'));
             }
 
             $result = $this->uploader->save($name, 'moon-slider');
@@ -43,6 +39,8 @@ class Upload extends Action
             $result = ['error' => $e->getMessage(), 'code' => $e->getCode()];
         }
 
-        return $this->resultFactory->create()->setData($result);
+        $response = $this->resultFactory->create($this->resultFactory::TYPE_JSON);
+        $response->setData($result);
+        return $response;
     }
 }

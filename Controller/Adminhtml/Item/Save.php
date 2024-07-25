@@ -1,71 +1,52 @@
 <?php
+declare(strict_types=1);
 
 namespace Tinik\MoonSlider\Controller\Adminhtml\Item;
 
-use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NotFoundException;
 use Psr\Log\LoggerInterface;
+use Tinik\MoonSlider\Api\Data\ItemInterface;
 use Tinik\MoonSlider\Api\ItemRepositoryInterface;
 use Tinik\MoonSlider\Api\SlideRepositoryInterface;
-use Tinik\MoonSlider\Model as SliderModel;
-
 
 class Save extends AbstractAction
 {
-
-    /** @var DataPersistorInterface */
-    protected $dataPersistor;
-
-    /** @var ItemRepositoryInterface */
-    protected $itemRepository;
-
-    /** @var JsonFactory */
-    private $jsonFactory;
-
-    /** @var LoggerInterface */
-    private $logger;
-
     /**
+     * Construct
      *
-     * @param Action\Context $context
-     * @param JsonFactory $jsonFactory
-     * @param DataPersistorInterface $dataDataPersistor
+     * @param Context $context
      * @param SlideRepositoryInterface $slideRepository
+     * @param DataPersistorInterface $dataPersistor
      * @param ItemRepositoryInterface $itemRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        Action\Context $context,
-        JsonFactory $jsonFactory,
-        DataPersistorInterface $dataDataPersistor,
+        Context $context,
         SlideRepositoryInterface $slideRepository,
-        ItemRepositoryInterface $itemRepository,
-        LoggerInterface $logger
-    )
-    {
+        private readonly DataPersistorInterface $dataPersistor,
+        private readonly ItemRepositoryInterface $itemRepository,
+        private readonly LoggerInterface $logger
+    ) {
         parent::__construct($context, $slideRepository);
-
-        $this->jsonFactory = $jsonFactory;
-        $this->dataPersistor = $dataDataPersistor;
-        $this->itemRepository = $itemRepository;
-        $this->logger = $logger;
     }
 
     /**
+     * Get request params
      *
      * @return array
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws NotFoundException
      */
-    protected function getParams()
+    protected function getParams(): array
     {
-        $values = (array)$this->getRequest()->getPostValue();
+        $data = (array)$this->getRequest()->getPostValue();
 
-        $data = $values;
         $data['slide_id'] = $this->getInstance()->getId();
         if (isset($data['is_active']) && ($data['is_active'] || 'true' == $data['is_active'])) {
-            $data['is_active'] = SliderModel\Item::STATUS_ENABLED;
+            $data['is_active'] = ItemInterface::STATUS_ENABLED;
         }
 
         foreach (['mobile', 'image'] as $key) {
@@ -80,10 +61,7 @@ class Save extends AbstractAction
     }
 
     /**
-     *
-     * @return \Magento\Framework\Controller\ResultInterface
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @inheritdoc
      */
     public function execute()
     {
@@ -92,12 +70,12 @@ class Save extends AbstractAction
             throw $this->createException(self::DEFAULT_MESSAGE);
         }
 
-        $id = $this->getRequest()->getParam('item_id');
+        $id = (int) $this->getRequest()->getParam('item_id');
         try {
             $entity = $this->getEntity($id);
 
             $entity->setData($this->getParams());
-            $entity->setSlideId($instance->getId());
+            $entity->setSliderId($instance->getId());
             if (empty($id)) {
                 $entity->setId(null);
             }
@@ -111,12 +89,14 @@ class Save extends AbstractAction
             ]);
         } catch (LocalizedException $e) {
             $this->logger->critical($e);
+
             return $this->createResponse($id, [
                 'error' => true,
                 'message' => $e->getMessage()
             ]);
         } catch (\Exception $e) {
             $this->logger->critical($e);
+
             return $this->createResponse($id, [
                 'error' => true,
                 'message' => __('Something went wrong while saving the data.'),
@@ -124,27 +104,32 @@ class Save extends AbstractAction
         }
     }
 
-    protected function createResponse($id, array $params = []): Json
+    /**
+     * Generate save response
+     *
+     * @param int $objectId
+     * @param array $params
+     * @return ResultInterface
+     */
+    private function createResponse(int $objectId, array $params = []): ResultInterface
     {
-        $values = array_merge($params, [
-            'data' => [
-                'entity_id' => $id
-            ]
-        ]);
+        $values = array_merge($params, ['data' => ['entity_id' => $objectId]]);
 
-        $result = $this->jsonFactory->create();
+        $result = $this->resultFactory->create($this->resultFactory::TYPE_JSON);
         $result->setData($values);
         return $result;
     }
 
     /**
-     * @param $id
-     * @return \Tinik\MoonSlider\Model\Item
+     * Get object
+     *
+     * @param int|null $objectId
+     * @return ItemInterface
      */
-    protected function getEntity($id)
+    private function getEntity(?int $objectId): ItemInterface
     {
-        if ($id) {
-            return $this->itemRepository->getById($id);
+        if ($objectId) {
+            return $this->itemRepository->getById($objectId);
         }
 
         return $this->itemRepository->createObject();
